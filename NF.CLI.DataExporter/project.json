@@ -1,0 +1,22 @@
+{
+    "name": "NF.CLI.ClassGenerator",
+    "version": "1.0.1",
+    "buildOptions": {
+        "debugType": "portable",
+        "emitEntryPoint": true,
+        "copyToOutput": {
+            "includeFiles": ["sqlcipher.dll", "libsqlcipher.so"]
+        },
+        "platform": "x86"
+    },
+    "dependencies": {},
+    "frameworks": {
+        "net45": {
+            "dependencies": {
+                "SQLite.Attribute": "1.0.1",
+                "CommandLineParser": "2.1.1-beta",
+                "NPOI": "2.2.1"
+            }
+        }
+    }
+}

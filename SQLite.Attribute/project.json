@@ -1,0 +1,14 @@
+{
+  "name": "SQLite.Attribute",
+  "version": "1.0.1",
+  "buildOptions": {
+    "debugType": "portable"
+  },
+  "dependencies": {},
+  "frameworks": {
+    "net35": {
+      "dependencies": {
+      }
+    }
+  }
+}
