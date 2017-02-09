@@ -5,7 +5,7 @@
 [flow.puml](flow.puml)
 
 ## introduce
-this is sample dataflow. When I making a game(in unity), I don't like to hard-coding for data class from excel. I'm writing custom class generator, and data exporter for that work.
+this is sample dataflow. When I making a game(in unity), I don't like to hard-coding for data class from excel. I'm writing custom class generator, and data exporter for that work with https://github.com/netpyoung/SqlCipher4Unity3D.
 
 If you want to use [ScriptableObject](https://docs.unity3d.com/ScriptReference/ScriptableObject.html), check [Unity-QuickSheet](https://github.com/kimsama/Unity-QuickSheet).
 
