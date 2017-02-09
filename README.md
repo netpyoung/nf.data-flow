@@ -36,6 +36,7 @@ __BUILD
 - [ ] mustach to dotliquid
 - [ ] serializable contructor for custom value.
 - [ ] documentation
+- [ ] migrate dotnet cli when ms support macOs.
 
 
 [atom-ext:plantuml-viewer]: https://atom.io/packages/plantuml-viewer
