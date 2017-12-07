@@ -1,6 +1,6 @@
 ﻿namespace NF.CLI.ClassGenerator
 {
-    using Mustache;
+    using DotLiquid;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -11,23 +11,9 @@
 
     public class ExcelClassGenerator
     {
-        class DateTag : InlineTagDefinition
-        {
-            DateTime time = DateTime.Now;
-
-            public DateTag() : base("date")
-            {
-            }
-
-            public override void GetText(TextWriter writer, Dictionary<string, object> arguments, Scope context)
-            {
-                writer.Write(time);
-            }
-        }
 
         internal static void Generate(string input_excel_fpath, string template_dir, string output_dir)
         {
-            Console.WriteLine("FFF " + output_dir);
             if (!Directory.Exists(output_dir))
             {
                 Directory.CreateDirectory(output_dir);
@@ -42,9 +28,9 @@
         const string ENUM_SHEET_PREFIX = "_E_";
         const string IGNORE_PREFIX = "_";
 
-        Dictionary<string, Generator> GetClassRenderDic(string template_dir)
+        Dictionary<string, Template> GetClassRenderDic(string template_dir)
         {
-            var ret = new Dictionary<string, Generator>();
+            var ret = new Dictionary<string, Template>();
             ISheet sheet = this._reader.GetSheet("_RENDERER");
             if (sheet == null)
             {
@@ -75,10 +61,9 @@
                 }
 
 
-                Generator gen = GetGenerator(File.ReadAllText(Path.Combine(template_dir, template_name)));
+                Template gen = GetGenerator(File.ReadAllText(Path.Combine(template_dir, template_name)));
 
                 for (int cellnum = 1; cellnum < columnmax; ++cellnum)
-
                 {
                     var cell = row.GetCell(cellnum);
                     if (cell == null)
@@ -100,15 +85,15 @@
 
         public void Render(string template_dir, string output_dir)
         {
-            var tpl_const = File.ReadAllText(Path.Combine(template_dir, "const.mustache"));
-            var tpl_enum = File.ReadAllText(Path.Combine(template_dir, "enum.mustache"));
-            var tpl_class = File.ReadAllText(Path.Combine(template_dir, "class.mustache"));
+            var tpl_const = File.ReadAllText(Path.Combine(template_dir, "const.liquid"));
+            var tpl_enum = File.ReadAllText(Path.Combine(template_dir, "enum.liquid"));
+            var tpl_class = File.ReadAllText(Path.Combine(template_dir, "class.liquid"));
 
             var gen_const = GetGenerator(tpl_const);
             var gen_enum = GetGenerator(tpl_enum);
             var gen_class = GetGenerator(tpl_class);
 
-            Dictionary<string, Generator> class_dic = GetClassRenderDic(template_dir);
+            Dictionary<string, Template> class_dic = GetClassRenderDic(template_dir);
 
             var lst = new List<ClassDeclare>();
 
@@ -119,20 +104,20 @@
                 if (sheetname.StartsWith(COST_SHEET_PREFIX))
                 {
                     var const_declare = GetConstDeclareFromSingleSheet(sheet);
-                    var path = Path.Combine(output_dir, string.Format("const_{0}.cs", const_declare.Name));
-                    WriteToFile(path, gen_const.Render(GetConstDeclareFromSingleSheet(sheet)));
+                    var path = Path.Combine(output_dir, string.Format("const_{0}.cs", const_declare.name));
+                    WriteToFile(path, gen_const.Render(Hash.FromAnonymousObject(new { c = const_declare })));
                 }
                 else if (sheetname == SINGLE_ENUM_SHEETNAME)
                 {
                     var enum_declares = GetEnumDeclares(sheet);
                     var path = Path.Combine(output_dir, "enum.cs");
-                    WriteToFile(path, gen_enum.Render(enum_declares));
+                    WriteToFile(path, gen_enum.Render(Hash.FromAnonymousObject(new { list = enum_declares })));
                 }
                 else if (sheetname.StartsWith(ENUM_SHEET_PREFIX))
                 {
                     var enum_declare = GetEnumDeclareFromSingleSheet(sheet);
-                    var path = Path.Combine(output_dir, string.Format("enum_{0}.cs", enum_declare.Name));
-                    WriteToFile(path, gen_enum.Render(new EnumDeclare[] { enum_declare }));
+                    var path = Path.Combine(output_dir, string.Format("enum_{0}.cs", enum_declare.name));
+                    WriteToFile(path, gen_enum.Render(Hash.FromAnonymousObject(new { list = new EnumDeclare[] { enum_declare } })));
                 }
 
                 if (sheetname.StartsWith(IGNORE_PREFIX))
@@ -143,7 +128,7 @@
                 if (class_dic.ContainsKey(sheet.SheetName))
                 {
                     var path = Path.Combine(output_dir, string.Format("class_{0}.cs", sheet.SheetName));
-                    WriteToFile(path, class_dic[sheet.SheetName].Render(GetClaassDeclare(sheet)));
+                    WriteToFile(path, class_dic[sheet.SheetName].Render(Hash.FromAnonymousObject(new { c = GetClaassDeclare(sheet) })));
                 }
                 else
                 {
@@ -151,7 +136,7 @@
                 }
             }
             var pathc = Path.Combine(output_dir, "class.cs");
-            WriteToFile(pathc, gen_class.Render(lst));
+            WriteToFile(pathc, gen_class.Render(Hash.FromAnonymousObject(new {date = DateTime.Now, list = lst })));
 
             foreach (FileInfo file in new DirectoryInfo(template_dir).GetFiles())
             {
@@ -163,11 +148,12 @@
             }
         }
 
-        Generator GetGenerator(string template)
+        Template GetGenerator(string template)
         {
-            FormatCompiler compiler = new FormatCompiler { RemoveNewLines = false };
-            compiler.RegisterTag(this.Tag, true);
-            return compiler.Compile(template);
+            //FormatCompiler compiler = new FormatCompiler { RemoveNewLines = false };
+            //compiler.RegisterTag(this.Tag, true);
+            //return compiler.Compile(template);
+            return Template.Parse(template);
         }
 
         enum E_DATA_ROW
@@ -205,7 +191,6 @@
         }
 
         readonly byte[] END_COLOR = { 255, 255, 0 };
-        DateTag Tag = new DateTag();
         string excel_fpath = null;
         IWorkbook _reader = null;
 
@@ -268,14 +253,14 @@
                 var value = row.GetCell((int)E_SINGLE_ENUM_COLUMN.VALUE).StringOrNull();
                 var desc = row.GetCell((int)E_SINGLE_ENUM_COLUMN.DESC).StringOrNull();
 
-                string[] Attributes = null;
+                string[] attributes = null;
                 if (!string.IsNullOrEmpty(attribute))
                 {
-                    Attributes = attribute.Split(';').ToArray();
+                    attributes = attribute.Split(';').ToArray();
                 }
-                args.Add(new EnumMember { Name = name, Value = value, Desc = desc, Attributes = Attributes });
+                args.Add(new EnumMember { name = name, value = value, desc = desc, attributes = attributes });
             }
-            ret.Name = sheet.SheetName.Remove(0, ENUM_SHEET_PREFIX.Length);
+            ret.name = sheet.SheetName.Remove(0, ENUM_SHEET_PREFIX.Length);
             ret.args = args.ToArray();
             return ret;
         }
@@ -337,7 +322,7 @@
 
         ClassDeclare GetClaassDeclare(ISheet sheet)
         {
-            var ret = new ClassDeclare { Name = sheet.SheetName };
+            var ret = new ClassDeclare { name = sheet.SheetName };
             var lst = new List<ClassMember>();
             var max = GetColumnMax(sheet);
             for (int i = 0; i < max; ++i)
@@ -348,7 +333,7 @@
                     lst.Add(item);
                 }
             }
-            ret.ClassMembers = lst.ToArray();
+            ret.class_members = lst.ToArray();
             return ret;
         }
 
@@ -411,15 +396,15 @@
                 var value = row.GetCell((int)E_SINGLE_CONST_COLUMN.VALUE).StringOrNull();
                 var desc = row.GetCell((int)E_SINGLE_CONST_COLUMN.DESC).StringOrNull();
 
-                string[] Attributes = null;
+                string[] attributes = null;
                 if (!string.IsNullOrEmpty(attribute))
                 {
-                    Attributes = attribute.Split(';').ToArray();
+                    attributes = attribute.Split(';').ToArray();
                 }
-                args.Add(new ConstMember { Part = part, Type = typevalue, Name = name, Value = value, Desc = desc, Attributes = Attributes });
+                args.Add(new ConstMember { part = part, type = typevalue, name = name, value = value, desc = desc, attributes = attributes });
             }
-            ret.Name = sheet.SheetName.Remove(0, COST_SHEET_PREFIX.Length);
-            ret.ConstMembers = args.ToArray();
+            ret.name = sheet.SheetName.Remove(0, COST_SHEET_PREFIX.Length);
+            ret.const_members = args.ToArray();
             return ret;
         }
 
@@ -434,14 +419,14 @@
         }
     }
 
-    public class BasePart
+    public class BasePart : Drop
     {
-        public E_PART Part = E_PART.Common;
+        public E_PART part = E_PART.Common;
 
-        public bool IsClient { get { return Part.HasFlag(E_PART.Client); } }
-        public bool IsClientOnly { get { return Part == E_PART.Client; } }
-        public bool IsServer { get { return Part.HasFlag(E_PART.Server); } }
-        public bool IsServerOnly { get { return Part == E_PART.Server; } }
+        public bool is_client { get { return part.HasFlag(E_PART.Client); } }
+        public bool is_client_only { get { return part == E_PART.Client; } }
+        public bool is_server { get { return part.HasFlag(E_PART.Server); } }
+        public bool is_server_only { get { return part == E_PART.Server; } }
     }
 
     [Flags]
@@ -454,62 +439,62 @@
 
     #region ConstSheet
 
-    public class ConstDeclare
+    public class ConstDeclare : Drop
     {
-        public string Name;
-        public ConstMember[] ConstMembers;
+        public string name  { get; set; }
+        public ConstMember[] const_members  { get; set; }
     }
 
     public class ConstMember : BasePart
     {
-        public string[] Attributes;
-        public string Type;
-        public string Name;
-        public string Value;
-        public string Desc;
-        public bool IsString { get { return Type == "string"; } }
+        public string[] attributes { get; set; }
+        public string type { get; set; }
+        public string name { get; set; }
+        public string value { get; set; }
+        public string desc { get; set; }
+        public bool is_string { get { return type == "string"; } }
     }
 
     #endregion ConstSheet
 
     #region EnumSheet
 
-    public class EnumSheet
+    public class EnumSheet : Drop
     {
-        public EnumDeclare[] EnumDeclares;
+        public EnumDeclare[] enum_declares  { get; set; }
     }
 
     public class EnumDeclare : BasePart
     {
-        public string[] Attributes;
-        public string Name;
-        public EnumMember[] args;
+        public string[] attributes { get; set; }
+        public string name { get; set; }
+        public EnumMember[] args { get; set; }
 
         public static EnumDeclare GenEnumDeclare(E_PART part, string attribute, string name, string[] args)
         {
-            string[] Attributes = null;
+            string[] attributes = null;
             if (!string.IsNullOrEmpty(attribute))
             {
-                Attributes = attribute.Split(';').ToArray();
+                attributes = attribute.Split(';').ToArray();
             }
 
-            return new EnumDeclare { Part = part, Attributes = Attributes, Name = name, args = EnumMember.GenEnumMembers(args) };
+            return new EnumDeclare { part = part, attributes = attributes, name = name, args = EnumMember.GenEnumMembers(args) };
         }
     }
 
     public class EnumMember : BasePart
     {
-        public string[] Attributes;
-        public string Name;
-        public string Value;
-        public string Desc;
+        public string[] attributes { get; set; }
+        public string name { get; set; }
+        public string value { get; set; }
+        public string desc { get; set; }
 
         public static EnumMember[] GenEnumMembers(string[] args)
         {
             var ret = new List<EnumMember>();
             foreach (var arg in args)
             {
-                ret.Add(new EnumMember { Name = arg });
+                ret.Add(new EnumMember { name = arg });
             }
             return ret.ToArray();
         }
@@ -519,27 +504,27 @@
 
     #region ClassSheet
 
-    public class ClassDeclare
+    public class ClassDeclare : Drop
     {
-        public string Name;
-        public ClassMember[] ClassMembers;
+        public string name { get; set; }
+        public ClassMember[] class_members { get; set; }
     }
 
     public class ClassMember : BasePart
     {
-        public string[] Attributes;
-        public string Type;
-        public string Name;
+        public string[] attributes { get; set; }
+        public string type { get; set; }
+        public string name { get; set; }
 
         public static ClassMember GenClassMember(E_PART part, string attribute, string type, string name)
         {
-            string[] Attributes = null;
+            string[] attributes = null;
             if (!string.IsNullOrEmpty(attribute))
             {
-                Attributes = attribute.Split(';').ToArray();
+                attributes = attribute.Split(';').ToArray();
             }
 
-            return new ClassMember { Part = part, Attributes = Attributes, Type = type, Name = name };
+            return new ClassMember { part = part, attributes = attributes, type = type, name = name };
         }
     }
 

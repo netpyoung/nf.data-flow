@@ -6,10 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommandLineParser" Version="1.9.71" />    
-    <PackageReference Include="DotLiquid" Version="1.8.0" />    
-    <PackageReference Include="mustache-sharp-3.5" Version="0.2.8.1" />    
-    <PackageReference Include="NPOI" Version="2.2.1" />    
+    <PackageReference Include="CommandLineParser" Version="1.9.71" />
+    <PackageReference Include="DotLiquid" Version="2.0.158" />
+    <PackageReference Include="NPOI" Version="2.2.1" />
 
     <DotNetCliToolReference Include="dotnet-mono" Version="*" />
   </ItemGroup>

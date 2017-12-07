@@ -3,7 +3,7 @@
     using System;
     using System.Reflection;
     using SQLite.Attribute;
-    using SqlCipher.Core;
+    using SqlCipher4Unity3D;
     using ToolDataClassGenerator;
     using CommandLine;
     using System.Linq;
@@ -55,7 +55,7 @@
             }
 
             var loader = new ExcelLoader(input_excel_fpath);
-            var conn = new SQLiteConnection(output_fpath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+            var conn = new SQLiteConnection(output_fpath, password, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
             for (int i = 0; i < types.Count(); ++i)
             {
                 var type = types[i];
