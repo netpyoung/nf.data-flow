@@ -14,7 +14,7 @@ PASSWORD          = "helloworld"
 
 
 # DOTNET_RUN = "dotnet mono run"
-DOTNET_RUN32 = 'dotnet mono -f net462 -r x86 -mo="--arch=32 --debug"'
+DOTNET_RUN32 = 'dotnet mono -f net462 -mo="--arch=32 --debug" --loggerlevel Verbose'
 # DOTNET_RUN64 = 'dotnet mono -f net462  -mo="--arch=64 --debug"'
 DOTNET_RUN = 'dotnet mono -f net462 -mo="--arch=64 --debug"'
 
