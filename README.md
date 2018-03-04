@@ -42,3 +42,9 @@ __BUILD
 [atom-ext:plantuml-viewer]: https://atom.io/packages/plantuml-viewer
 [chrome-ext:PlantUML Viewer]: https://chrome.google.com/webstore/detail/plantuml-viewer/legbfeljfbjgfifnkmpoajgpgejojooj
 [sqlitebrowser]: https://github.com/sqlitebrowser/sqlitebrowser
+
+# ref
+* dotliquid: 
+* t4 : https://msdn.microsoft.com/en-us/library/bb126445.aspx
+* scripty:  https://daveaglick.com/posts/announcing-scripty
+* roslyn:  source generator
