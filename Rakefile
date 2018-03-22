@@ -1,6 +1,6 @@
 require 'fileutils'
 
-ENV['FrameworkPathOverride'] = '/Library/Frameworks/Mono.framework/Versions/5.2.0/lib/mono/4.6.2-api/'
+ENV['FrameworkPathOverride'] = '/Library/Frameworks/Mono.framework/Versions/Current/lib/mono/4.5/'
 
 ROOT = Dir.pwd
 BUILD_DIR = "#{ROOT}/__BUILD"
