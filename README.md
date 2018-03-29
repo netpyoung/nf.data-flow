@@ -13,16 +13,48 @@ If you want to use [ScriptableObject](https://docs.unity3d.com/ScriptReference/S
 * [dotnet cli](https://www.microsoft.com/net/core)
 * [Sqlite](https://www.sqlite.org/) && [Sqlcipher](https://www.zetetic.net/sqlcipher/)
 
+## flow
+### excel
+
+`SampleCharacter`
+
+| Common | Common       | Common | Common   |
+| Unique |              |        | Obsolete |
+| int    | int          | string | int      |
+| id     | character_id | name   | level    |
+| 1      | 1            |  john  | 1        |
+| 2      | 2            |  yoshi | 2        |
+| 3      | 3            |  mario | 3        |
+| 4      | 4            |  piona | 4        |
+
+
+### unity
+``` cs
+void Start()
+{
+    DataService ds = new DataService("Assets/output/DB.db", "helloworld");
+    List<SampleCharacter> characters = ds.Gets<SampleCharacter>();
+    foreach (SampleCharacter c in characters)
+    {
+        Debug.Log($"{c.id} | {c.character_id} | {c.level} | {c.name}");
+    }
+}
+```
+
+
+
+
+
 ## example
 ```
 $ rake --version
-rake, version 11.1.2
+rake, version 10.4.2
 
 $ dotnet --version
-2.0.3
+2.1.101
 
 $ rake
- ...
+...
 
 $ tree __BUILD
 __BUILD
@@ -34,24 +66,17 @@ __BUILD
 ```
 
 ## TODO
-- [ ] refactoring
-- [ ] mustach to dotliquid
 - [ ] serializable contructor for custom value.
 - [ ] documentation
-- [ ] migrate dotnet cli when ms support macOs.
- - https://github.com/dotnet/netcorecli-fsc/wiki/.NET-Core-SDK-rc4#using-net-framework-as-targets-framework-the-osxunix-build-fails
- - https://github.com/dotnet/core-setup/issues/2649
- - https://github.com/TheAngryByrd/dotnet-mono
- - https://github.com/dotnet/core/blob/master/release-notes/download-archives/2.0.3.md
- - https://docs.microsoft.com/en-us/dotnet/core/tools/project-json-to-csproj
 
-
-[atom-ext:plantuml-viewer]: https://atom.io/packages/plantuml-viewer
-[chrome-ext:PlantUML Viewer]: https://chrome.google.com/webstore/detail/plantuml-viewer/legbfeljfbjgfifnkmpoajgpgejojooj
-[sqlitebrowser]: https://github.com/sqlitebrowser/sqlitebrowser
 
 # ref
-* dotliquid: 
+* dotliquid:
 * t4 : https://msdn.microsoft.com/en-us/library/bb126445.aspx
 * scripty:  https://daveaglick.com/posts/announcing-scripty
 * roslyn:  source generator
+
+## etc.
+* https://atom.io/packages/plantuml-viewer
+* https://chrome.google.com/webstore/detail/plantuml-viewer/legbfeljfbjgfifnkmpoajgpgejojooj
+* https://github.com/sqlitebrowser/sqlitebrowser
