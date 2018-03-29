@@ -19,6 +19,7 @@ If you want to use [ScriptableObject](https://docs.unity3d.com/ScriptReference/S
 `SampleCharacter`
 
 | Common | Common       | Common | Common   |
+| ------ | ------------ | ------ | -------- |
 | Unique |              |        | Obsolete |
 | int    | int          | string | int      |
 | id     | character_id | name   | level    |
