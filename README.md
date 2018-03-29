@@ -30,6 +30,25 @@ If you want to use [ScriptableObject](https://docs.unity3d.com/ScriptReference/S
 
 
 ### unity
+
+class.autogen.cs
+
+```cs
+    [Export]
+    public class SampleCharacter
+    {
+        
+        [Unique]
+        public int id { get; set; }
+        public int character_id { get; set; }
+        public string name { get; set; }
+        [Obsolete]
+        public int level { get; set; }
+    }
+```
+
+main
+
 ``` cs
 void Start()
 {
