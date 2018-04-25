@@ -37,10 +37,20 @@ namespace ToolDataClassGenerator
             }
 
             ISheet sheet = this._reader.GetSheet(sheetName);
+            if (sheet == null)
+            {
+                return ret;
+            }
 
             Dictionary<string, int> field_indexed_dic = new Dictionary<string, int>();
             foreach (ICell cell in sheet.GetRow(3))
             {
+                if (cell.CellStyle != null
+                    && cell.CellStyle.FillForegroundColorColor != null
+                    && cell.CellStyle.FillForegroundColorColor.RGB.SequenceEqual(this.END_COLOR))
+                {
+                    break;
+                }
                 cell.SetCellType(CellType.String);
                 string val = cell.StringCellValue;
                 if (memberDic.ContainsKey(val))
