@@ -2,18 +2,19 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net46</TargetFramework>
-    <Platform>x86</Platform>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="../SQLite.Attribute/SQLite.Attribute.csproj" />
-    <DotNetCliToolReference Include="dotnet-mono" Version="*" />
-
-    <PackageReference Include="CommandLineParser" Version="2.1.1-beta" /> 
-    <PackageReference Include="SQLite.Attribute" Version="1.0.1" />
-    <PackageReference Include="NPOI" Version="2.2.1" />
+    
+    <PackageReference Include="CommandLineParser" Version="2.2.1" />
+    <PackageReference Include="DotNetCore.NPOI" Version="1.2.0" />
+	<PackageReference Include="SharpZipLib" Version="1.0.0-rc2" />
+	
+    <PackageReference Include="DotLiquid" Version="2.0.158" />
     <None Include="sqlcipher.dll" CopyToOutputDirectory="Always" />
+    <None Include="libeay32.dll" CopyToOutputDirectory="Always" />
     <None Include="libsqlcipher.so" CopyToOutputDirectory="Always" />
   </ItemGroup>
 

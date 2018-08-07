@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net46</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-mono" Version="*" />
     <ProjectReference Include="../SQLite.Attribute/SQLite.Attribute.csproj" />
   </ItemGroup>
   <ItemGroup>

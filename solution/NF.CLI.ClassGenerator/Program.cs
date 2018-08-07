@@ -19,15 +19,15 @@ namespace NF.CLI.ClassGenerator
     {
         private static void Main(string[] args)
         {
-            Options opt = new Options();
-            if (Parser.Default.ParseArguments(args, opt))
-            {
-                Run(opt);
-            }
-            else
-            {
-                Console.WriteLine("usage -e #{excel} -t #{template} -o #{output}");
-            }
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed((opt) => Run(opt))
+                .WithNotParsed((errs) =>
+                {
+                    foreach (Error err in errs)
+                    {
+                        Console.Error.WriteLine(err);
+                    }
+                });
         }
 
         private static void Run(Options opt)
