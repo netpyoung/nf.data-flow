@@ -7,7 +7,7 @@ using System.Reflection;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace ToolDataClassGenerator
+namespace NF.Tool.DataFlow
 {
     internal class ExcelLoader
     {

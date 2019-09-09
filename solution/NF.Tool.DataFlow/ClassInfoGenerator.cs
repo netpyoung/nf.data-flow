@@ -7,7 +7,7 @@ using DotLiquid;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
-namespace NF.CLI.ClassGenerator
+namespace NF.Tool.DataFlow
 {
     public class ExcelClassGenerator
     {
