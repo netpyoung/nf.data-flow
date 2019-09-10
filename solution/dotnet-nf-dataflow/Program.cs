@@ -1,7 +1,9 @@
 ﻿using System;
 using CommandLine;
+using NF.Tools.DataFlow.CodeGen;
+using NF.Tools.DataFlow.DataExport;
 
-namespace NF.Tool.DataFlow
+namespace NF.Tools.DataFlow
 {
     internal class Program
     {
@@ -23,6 +25,7 @@ namespace NF.Tool.DataFlow
             }
             catch (Exception e)
             {
+                Console.Error.WriteLine(e);
                 return 1;
             }
         }
@@ -36,6 +39,7 @@ namespace NF.Tool.DataFlow
             }
             catch (Exception e)
             {
+                Console.Error.WriteLine(e);
                 return 1;
             }
         }

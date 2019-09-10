@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace NF.Tool.DataFlow
+namespace NF.Tools.DataFlow.CodeGen
 {
     [Verb("code-gen", HelpText = "generate code from exel.")]
     internal class CodeGenOptions

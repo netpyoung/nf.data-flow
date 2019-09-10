@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace NF.Tool.DataFlow
+namespace NF.Tools.DataFlow.DataExport
 {
     [Verb("data-export", HelpText = "export data from excel.")]
     internal class DataExportOptions

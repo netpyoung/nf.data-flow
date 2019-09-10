@@ -23,9 +23,9 @@ end
 desc 'dotnet tool instlal --global'
 task :dotnet_tool_install do
   Dir.chdir('solution') do
-    Dir.chdir('NF.Tool.DataFlow') do
+    Dir.chdir('dotnet-nf-dataflow') do
       sh 'dotnet pack'
-      sh 'dotnet tool install --global --add-source ./nupkg NF.Tool.DataFlow'
+      sh 'dotnet tool install --global --add-source ./nupkg dotnet-nf-dataflow'
     end
   end
 end

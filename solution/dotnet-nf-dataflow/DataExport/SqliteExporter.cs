@@ -5,7 +5,7 @@ using System.Reflection;
 using SqlCipher4Unity3D;
 using SQLite.Attribute;
 
-namespace NF.Tool.DataFlow
+namespace NF.Tools.DataFlow.DataExport
 {
     public static class SqliteExporter
     {
