@@ -185,6 +185,7 @@ namespace NF.Tools.DataFlow.CodeGen
 
         public void Render(string templateDir, string outputDir)
         {
+            var date = DateTime.Now;
             string tplConst = File.ReadAllText(Path.Combine(templateDir, "const.liquid"));
             string tplEnum = File.ReadAllText(Path.Combine(templateDir, "enum.liquid"));
             string tplClass = File.ReadAllText(Path.Combine(templateDir, "class.liquid"));
@@ -205,20 +206,20 @@ namespace NF.Tools.DataFlow.CodeGen
                 {
                     ConstDeclare constDeclare = this.GetConstDeclareFromSingleSheet(sheet);
                     string path = Path.Combine(outputDir, $"const_{constDeclare.name}.cs");
-                    this.WriteToFile(path, genConst.Render(Hash.FromAnonymousObject(new {c = constDeclare})));
+                    this.WriteToFile(path, genConst.Render(Hash.FromAnonymousObject(new { date, c = constDeclare })));
                 }
                 else if (sheetname == SINGLE_ENUM_SHEETNAME)
                 {
                     EnumDeclare[] enumDeclares = this.GetEnumDeclares(sheet);
                     string path = Path.Combine(outputDir, "enum.autogen.cs");
-                    this.WriteToFile(path, genEnum.Render(Hash.FromAnonymousObject(new {list = enumDeclares})));
+                    this.WriteToFile(path, genEnum.Render(Hash.FromAnonymousObject(new { date, list = enumDeclares })));
                 }
                 else if (sheetname.StartsWith(ENUM_SHEET_PREFIX))
                 {
                     EnumDeclare enumDeclare = this.GetEnumDeclareFromSingleSheet(sheet);
                     string path = Path.Combine(outputDir, $"enum_{enumDeclare.name}.cs");
                     this.WriteToFile(path,
-                        genEnum.Render(Hash.FromAnonymousObject(new {list = new[] {enumDeclare}})));
+                        genEnum.Render(Hash.FromAnonymousObject(new { date, list = new[] { enumDeclare } })));
                 }
 
                 if (sheetname.StartsWith(IGNORE_PREFIX))
@@ -231,7 +232,7 @@ namespace NF.Tools.DataFlow.CodeGen
                     string path = Path.Combine(outputDir, $"class_{sheet.SheetName}.autogen.cs");
                     this.WriteToFile(path,
                         classDic[sheet.SheetName]
-                            .Render(Hash.FromAnonymousObject(new {c = this.GetClaassDeclare(sheet)})));
+                            .Render(Hash.FromAnonymousObject(new { date, c = this.GetClaassDeclare(sheet) })));
                 }
                 else
                 {
@@ -240,7 +241,7 @@ namespace NF.Tools.DataFlow.CodeGen
             }
 
             string pathc = Path.Combine(outputDir, "class.autogen.cs");
-            this.WriteToFile(pathc, genClass.Render(Hash.FromAnonymousObject(new {date = DateTime.Now, list = lst})));
+            this.WriteToFile(pathc, genClass.Render(Hash.FromAnonymousObject(new { date, list = lst })));
 
             foreach (FileInfo file in new DirectoryInfo(templateDir).GetFiles())
             {

@@ -13,8 +13,16 @@ If you want to use [ScriptableObject](https://docs.unity3d.com/ScriptReference/S
 * [dotnet cli](https://www.microsoft.com/net/core)
 * [Sqlite](https://www.sqlite.org/) && [Sqlcipher](https://www.zetetic.net/sqlcipher/)
 
-## flow
+## dataflow
+- support Enum, Const
+
 ### excel
+
+* Sheet Name represent ClassName
+    1. category: Common | Client | Server
+    2. attribute
+    3. type
+    4. field name
 
 `SampleCharacter`
 
@@ -61,17 +69,14 @@ void Start()
 }
 ```
 
-
-
-
-
 ## example
-```
+
+``` cmd
 $ rake --version
 rake, version 10.4.2
 
 $ dotnet --version
-2.1.101
+2.2.203
 
 $ rake
 ...
@@ -86,17 +91,17 @@ __BUILD
 ```
 
 ## TODO
-- [ ] serializable contructor for custom value.
-- [ ] documentation
 
+* [ ] serializable contructor for custom value.
+* [ ] documentation
 
-# ref
+## Ref
+
 * dotliquid:
 * t4 : https://msdn.microsoft.com/en-us/library/bb126445.aspx
 * scripty:  https://daveaglick.com/posts/announcing-scripty
 * roslyn:  source generator
 
-## etc.
-* https://atom.io/packages/plantuml-viewer
-* https://chrome.google.com/webstore/detail/plantuml-viewer/legbfeljfbjgfifnkmpoajgpgejojooj
+## Etc
+
 * https://github.com/sqlitebrowser/sqlitebrowser

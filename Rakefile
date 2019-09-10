@@ -20,8 +20,8 @@ task :default do
   sh 'rake -T'
 end
 
-desc 'dotnet tool instlal --global'
-task :dotnet_tool_install do
+desc 'install dotnet-nf-dataflow'
+task :tool_install do
   Dir.chdir('solution') do
     Dir.chdir('dotnet-nf-dataflow') do
       sh 'dotnet pack'
@@ -30,8 +30,8 @@ task :dotnet_tool_install do
   end
 end
 
-desc 'dotnet tool uninstall --global'
-task :dotnet_tool_uninstall do
+desc 'uninstall dotnet-nf-dataflow'
+task :tool_uninstall do
   sh 'dotnet tool uninstall -g dotnet-nf-dataflow'
 end
 
