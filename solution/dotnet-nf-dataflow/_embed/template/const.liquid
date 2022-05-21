@@ -1,0 +1,17 @@
+using System.ComponentModel;
+
+namespace {{ data.sheet_info.sheet_namespace }}
+{
+    public class {{ data.sheet_info.sheet_name }}
+    {
+        {%- for content in data.contents -%}
+        {{ content.attr }}
+        [Description("{{ content.desc }}")]
+        {%- if content.type == "string" -%}
+        public const {{ content.type }} {{ content.name }} = "{{ content.value }}";
+        {%- else -%}
+        public const {{ content.type }} {{ content.name }} = {{ content.value }};
+        {%- endif -%}
+        {%- endfor -%}
+    }
+}

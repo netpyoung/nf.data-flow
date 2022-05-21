@@ -1,41 +1,38 @@
 ﻿using System;
+using System.IO;
 using CommandLine;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using NF.Tools.DataFlow.CodeGen;
 using NF.Tools.DataFlow.DataExport;
 
 namespace NF.Tools.DataFlow
 {
-    internal class Program
+    public class Program
     {
         private static int Main(string[] args)
         {
-            return Parser.Default.ParseArguments<CodeGenOptions, DataExportOptions>(args)
-                .MapResult(
-                    (CodeGenOptions opts) => RunCodeGenOptions(opts),
-                    (DataExportOptions opts) => RunDataExportOptions(opts),
-                    errs => 1);
-        }
+            //DataExporterOptions opt = new DataExporterOptions
+            //{
+            //    InputExcelDir = "C:/prj/nf.data-flow/exels",
+            //    OutputDatabasePath = "output.db",
+            //};
+            //return new DataExporter(opt).Export();
+          
 
-        private static int RunCodeGenOptions(CodeGenOptions opt)
-        {
             try
             {
-                ExcelClassGenerator.Generate(opt.InputExcel, opt.TemplateDir, opt.OutputDir);
-                return 0;
-            }
-            catch (Exception e)
-            {
-                Console.Error.WriteLine(e);
-                return 1;
-            }
-        }
-
-        private static int RunDataExportOptions(DataExportOptions opt)
-        {
-            try
-            {
-                SqliteExporter.Export(opt.DLL, opt.Excel, opt.Output, opt.Password);
-                return 0;
+                return Parser.Default.ParseArguments<CodeGeneratorOptions, DataExporterOptions>(args)
+                    .MapResult(
+                        (CodeGeneratorOptions opt) =>
+                        {
+                            return new CodeGenerator(opt).Generate();
+                        },
+                        (DataExporterOptions opt) =>
+                        {
+                            return new DataExporter(opt).Export();
+                        },
+                        errs => 1);
             }
             catch (Exception e)
             {

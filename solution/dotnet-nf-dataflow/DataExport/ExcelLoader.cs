@@ -4,53 +4,72 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using NF.Tools.DataFlow.CodeGen;
+using NF.Tools.DataFlow.CodeGen.Internal;
 using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 namespace NF.Tools.DataFlow.DataExport
 {
-    internal class ExcelLoader
+    public class ExcelLoader
     {
-        private readonly IFormulaEvaluator _evaluator;
+        CodeGenerator.CodeGenInfo _codeGenInfo;
+        Dictionary<string, (WorkbookInfo, ClassSheet)> _dic = new Dictionary<string, (WorkbookInfo, ClassSheet)>();
 
-        private readonly IWorkbook _reader;
-        private readonly byte[] END_COLOR = {255, 255, 0};
-
-        public ExcelLoader(string excel_fpath)
+        public ExcelLoader(in CodeGenerator.CodeGenInfo codeGenInfo)
         {
-            this._reader = this.GetExcelDataReader(excel_fpath);
-            this._evaluator = this._reader.GetCreationHelper().CreateFormulaEvaluator();
+            this._codeGenInfo = codeGenInfo;
+            foreach (CodeGenerator.WorkbookResultInfo wri in codeGenInfo.WorkbookResultInfos)
+            {
+                foreach (ClassSheet classSheet in wri.WorkbookInfo.ClassSheets)
+                {
+                    _dic[classSheet.sheet_info.sheet_name] = (wri.WorkbookInfo, classSheet);
+                }
+            }
         }
 
-        public List<object> GetDataList(Type type, string sheetName)
+        public List<object> GetDataListOrNull(Type type, string sheetName)
         {
-            List<object> ret = new List<object>();
+            if (!_dic.TryGetValue(sheetName, out var wf))
+            {
+                return null;
+            }
+            var _info = wf.Item1;
+            var excel = _info.Excel;
+            IFormulaEvaluator _evaluator = excel.GetCreationHelper().CreateFormulaEvaluator();
 
+            ClassSheet classSheet = _info.ClassSheets.FirstOrDefault(x => x.sheet_info.sheet_name == sheetName);
+            if (classSheet == null)
+            {
+                return null;
+            }
             const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
 
-            MemberInfo[] members = type.GetFields(bindingFlags).Cast<MemberInfo>()
-                .Concat(type.GetProperties(bindingFlags)).ToArray();
-            Dictionary<string, MemberInfo> memberDic = new Dictionary<string, MemberInfo>();
-            foreach (MemberInfo field in members)
-            {
-                memberDic.Add(field.Name, field);
-            }
+            MemberInfo[] members = type.GetFields(bindingFlags)
+                .Cast<MemberInfo>()
+                .Concat(type.GetProperties(bindingFlags))
+                .ToArray();
+            Dictionary<string, MemberInfo> memberDic = members.ToDictionary(x => x.Name, x => x);
 
-            ISheet sheet = this._reader.GetSheet(sheetName);
-            if (sheet == null)
+            var sheetInfo = classSheet.sheet_info;
+            int nameRowIndex = -1;
+            foreach (var x in classSheet.reserved_dic2)
             {
-                return ret;
+                if (x.Value.Reserved == ReservedCell.E_RESERVED.NAME)
+                {
+                    nameRowIndex = x.Value.Position.y;
+                }
+            }
+            if (nameRowIndex == -1)
+            {
+                return null;
             }
 
             Dictionary<string, int> field_indexed_dic = new Dictionary<string, int>();
-            foreach (ICell cell in sheet.GetRow(3))
+            var nameRow = sheetInfo.sheet.GetRow(nameRowIndex);
+            for (int x = 0; x < sheetInfo.column_max; ++x)
             {
-                if (cell.CellStyle != null
-                    && cell.CellStyle.FillForegroundColorColor != null
-                    && cell.CellStyle.FillForegroundColorColor.RGB.SequenceEqual(this.END_COLOR))
-                {
-                    break;
-                }
+                ICell cell = nameRow.GetCell(x);
                 cell.SetCellType(CellType.String);
                 string val = cell.StringCellValue;
                 if (memberDic.ContainsKey(val))
@@ -59,21 +78,10 @@ namespace NF.Tools.DataFlow.DataExport
                 }
             }
 
-            for (int i = 4; i < sheet.LastRowNum; ++i)
+            List<object> ret = new List<object>(sheetInfo.row_max - nameRowIndex);
+            for (int y = nameRowIndex + 1; y < sheetInfo.row_max; ++y)
             {
-                IRow row = sheet.GetRow(i);
-                ICell cell0 = row.GetCell(0);
-                if (cell0 == null)
-                {
-                    break;
-                }
-
-                if (cell0.CellStyle != null
-                    && cell0.CellStyle.FillForegroundColorColor != null
-                    && cell0.CellStyle.FillForegroundColorColor.RGB.SequenceEqual(this.END_COLOR))
-                {
-                    break;
-                }
+                IRow row = sheetInfo.sheet.GetRow(y);
 
                 object item = Activator.CreateInstance(type);
                 foreach (KeyValuePair<string, int> kb in field_indexed_dic)
@@ -92,28 +100,28 @@ namespace NF.Tools.DataFlow.DataExport
                     switch (member.MemberType)
                     {
                         case MemberTypes.Field:
-                        {
-                            object value = this.GetValue(cell, ((FieldInfo) member).FieldType, this._evaluator);
-                            if (value == null)
                             {
-                                continue;
-                            }
+                                object value = this.GetValue(cell, ((FieldInfo)member).FieldType, _evaluator);
+                                if (value == null)
+                                {
+                                    continue;
+                                }
 
-                            ((FieldInfo) member).SetValue(item, value);
-                        }
+                            ((FieldInfo)member).SetValue(item, value);
+                            }
 
                             break;
 
                         case MemberTypes.Property:
-                        {
-                            object value = this.GetValue(cell, ((PropertyInfo) member).PropertyType, this._evaluator);
-                            if (value == null)
                             {
-                                continue;
-                            }
+                                object value = this.GetValue(cell, ((PropertyInfo)member).PropertyType, _evaluator);
+                                if (value == null)
+                                {
+                                    continue;
+                                }
 
-                            ((PropertyInfo) member).SetValue(item, value, null);
-                        }
+                            ((PropertyInfo)member).SetValue(item, value, null);
+                            }
 
                             break;
                     }
@@ -124,111 +132,6 @@ namespace NF.Tools.DataFlow.DataExport
 
             return ret;
         }
-
-        public List<T> GetDataList<T>(string sheet_name)
-        {
-            List<T> ret = new List<T>();
-            Type type = typeof(T);
-
-            const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.Instance;
-
-            MemberInfo[] members = type.GetFields(bindingFlags).Cast<MemberInfo>()
-                .Concat(type.GetProperties(bindingFlags)).ToArray();
-            Dictionary<string, MemberInfo> memberDic = new Dictionary<string, MemberInfo>();
-            foreach (MemberInfo field in members)
-            {
-                memberDic.Add(field.Name, field);
-            }
-
-            ISheet sheet = this._reader.GetSheet(sheet_name);
-
-            Dictionary<string, int> fieldIndexedDic = new Dictionary<string, int>();
-            foreach (ICell cell in sheet.GetRow(0))
-            {
-                cell.SetCellType(CellType.String);
-                string val = cell.StringCellValue;
-                if (memberDic.ContainsKey(val))
-                {
-                    fieldIndexedDic.Add(val, cell.ColumnIndex);
-                }
-            }
-
-            for (int i = 1; i < sheet.LastRowNum; ++i)
-            {
-                IRow row = sheet.GetRow(i);
-                ICell cell0 = row.GetCell(0);
-                if (cell0 == null)
-                {
-                    break;
-                }
-
-                if (cell0.CellStyle != null
-                    && cell0.CellStyle.FillForegroundColorColor != null
-                    && cell0.CellStyle.FillForegroundColorColor.RGB.SequenceEqual(this.END_COLOR))
-                {
-                    break;
-                }
-
-                T item = (T) Activator.CreateInstance(type);
-                foreach (KeyValuePair<string, int> kb in fieldIndexedDic)
-                {
-                    string cached_field_name = kb.Key;
-                    int cached_column_idx = kb.Value;
-
-                    ICell cell = row.GetCell(cached_column_idx);
-                    MemberInfo member = memberDic[cached_field_name];
-
-                    if (cell == null)
-                    {
-                        continue;
-                    }
-
-                    switch (member.MemberType)
-                    {
-                        case MemberTypes.Field:
-                        {
-                            object value = this.GetValue(cell, ((FieldInfo) member).FieldType, this._evaluator);
-                            if (value == null)
-                            {
-                                continue;
-                            }
-
-                            ((FieldInfo) member).SetValue(item, value);
-                        }
-
-                            break;
-
-                        case MemberTypes.Property:
-                        {
-                            object value = this.GetValue(cell, ((PropertyInfo) member).PropertyType, this._evaluator);
-                            if (value == null)
-                            {
-                                continue;
-                            }
-
-                            ((PropertyInfo) member).SetValue(item, value, null);
-                        }
-
-                            break;
-                    }
-                }
-
-                ret.Add(item);
-            }
-
-            return ret;
-        }
-
-        private IWorkbook GetExcelDataReader(string excel_fpath)
-        {
-            using (FileStream fileStream = File.Open(excel_fpath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
-                XSSFWorkbook workbook = new XSSFWorkbook(fileStream);
-                // force evaulate! NPOI.XSSF.UserModel.XSSFFormulaEvaluator.EvaluateAllFormulaCells(workbook)
-                return workbook;
-            }
-        }
-
         #region dirty methods
 
         private object GetValue(ICell cell, Type type, IFormulaEvaluator evaluator)

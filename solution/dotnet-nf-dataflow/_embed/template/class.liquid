@@ -1,0 +1,16 @@
+using System;
+using SQLite.Attribute;
+using System.ComponentModel;
+
+namespace {{ data.sheet_info.sheet_namespace }}
+{
+    [Export]
+    public class {{ data.sheet_info.sheet_name }}
+    {
+        {%- for content in data.contents -%}
+        {{ content.attr }}
+        [Description("{{ content.desc }}")]
+        public {{ content.type }} {{ content.name }} { get; set; }
+        {%- endfor -%}
+    }
+}
