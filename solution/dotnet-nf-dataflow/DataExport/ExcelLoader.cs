@@ -1,34 +1,29 @@
-﻿using System;
+﻿using NF.Tools.DataFlow.CodeGen.Internal;
+using NPOI.SS.UserModel;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using NF.Tools.DataFlow.CodeGen;
-using NF.Tools.DataFlow.CodeGen.Internal;
-using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
 
 namespace NF.Tools.DataFlow.DataExport
 {
     public class ExcelLoader
     {
-        CodeGenerator.CodeGenInfo _codeGenInfo;
         Dictionary<string, (WorkbookInfo, ClassSheet)> _dic = new Dictionary<string, (WorkbookInfo, ClassSheet)>();
 
-        public ExcelLoader(in CodeGenerator.CodeGenInfo codeGenInfo)
+        public ExcelLoader(in List<WorkbookInfo> workbookInfos)
         {
-            this._codeGenInfo = codeGenInfo;
-            foreach (CodeGenerator.WorkbookResultInfo wri in codeGenInfo.WorkbookResultInfos)
+            foreach (WorkbookInfo wri in workbookInfos)
             {
-                foreach (ClassSheet classSheet in wri.WorkbookInfo.ClassSheets)
+                foreach (ClassSheet classSheet in wri.ClassSheets)
                 {
-                    _dic[classSheet.sheet_info.sheet_name] = (wri.WorkbookInfo, classSheet);
+                    _dic[classSheet.sheet_info.sheet_name] = (wri, classSheet);
                 }
             }
         }
 
-        public List<object> GetDataListOrNull(Type type, string sheetName)
+        public List<object> GetDataListOrNull(in Type type, string sheetName)
         {
             if (!_dic.TryGetValue(sheetName, out (WorkbookInfo, ClassSheet) wf))
             {
@@ -134,7 +129,7 @@ namespace NF.Tools.DataFlow.DataExport
         }
         #region dirty methods
 
-        private object GetValue(ICell cell, Type type, IFormulaEvaluator evaluator)
+        private object GetValue(in ICell cell, in Type type, in IFormulaEvaluator evaluator)
         {
             if (cell == null)
             {
@@ -232,13 +227,13 @@ namespace NF.Tools.DataFlow.DataExport
             return null;
         }
 
-        private void DebugLogICell(ICell cell, Type type, Exception e)
+        private void DebugLogICell(in ICell cell, in Type type, in Exception e)
         {
             Console.Error.WriteLine(e);
             Console.Error.WriteLine($"{cell.Sheet.SheetName}: {cell.RowIndex + 1}/{cell.ColumnIndex + 1} | {cell}({type})");
         }
 
-        private string GetStringVal(ICell cell, IFormulaEvaluator evaluator)
+        private string GetStringVal(in ICell cell, in IFormulaEvaluator evaluator)
         {
             switch (cell.CellType)
             {
