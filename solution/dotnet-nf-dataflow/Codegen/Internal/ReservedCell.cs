@@ -17,8 +17,8 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
             VALUE,
             DESC,
         }
-        public E_RESERVED Reserved { get; set; }
-        public int2 Position { get; set; }
-        public string CellString { get; set; }
+        public E_RESERVED Reserved { get; init; }
+        public int2 Position { get; init; }
+        public string CellString { get; init; }
     }
 }

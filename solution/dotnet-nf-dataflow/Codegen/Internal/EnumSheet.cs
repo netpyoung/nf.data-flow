@@ -13,7 +13,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
             public string name { get; init; }
             public string value { get; init; }
             public string desc { get; init; }
-            public ContentCell_Enum(string Attr, string Name, string Value, string Desc)
+            public ContentCell_Enum(in string Attr, in string Name, in string Value, in string Desc)
             {
                 this.attr = Attr;
                 this.name = Name;

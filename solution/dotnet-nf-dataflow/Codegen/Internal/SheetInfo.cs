@@ -21,7 +21,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
         public int row_max { get; init; }
         public int column_max { get; init; }
 
-        public SheetInfo(ISheet sheet, string refinedSheetName, string sheetNamespace, E_TYPE type, int rowMax, int columnMax)
+        public SheetInfo(in ISheet sheet, in string refinedSheetName, in string sheetNamespace, in E_TYPE type, in int rowMax, in int columnMax)
         {
             this.sheet = sheet;
             sheet_name = refinedSheetName;
@@ -33,11 +33,11 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
         // ================================================
 
         static readonly Regex rx = new Regex(@"^(@|!)?(?<name>\w+)", RegexOptions.Compiled);
-        static bool IsConstSheetName(string sheetName) => sheetName.StartsWith("!");
-        static bool IsEnumSheetName(string sheetName) => sheetName.StartsWith("@");
-        static bool IsIgnoreSheetName(string sheetName) => sheetName.StartsWith("#");
+        static bool IsConstSheetName(in string sheetName) => sheetName.StartsWith("!");
+        static bool IsEnumSheetName(in string sheetName) => sheetName.StartsWith("@");
+        static bool IsIgnoreSheetName(in string sheetName) => sheetName.StartsWith("#");
 
-        public static bool TryGetSheetInfo(ISheet sheet, CodeGeneratorOptions opt, out SheetInfo outInfo)
+        public static bool TryGetSheetInfo(in ISheet sheet, in CodeGeneratorOptions opt, out SheetInfo outInfo)
         {
             string sheetName = sheet.SheetName;
             SheetInfo.E_TYPE sheetInfoType = GetSheetInfoType(sheetName);
@@ -54,7 +54,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
             return true;
         }
 
-        internal static string RefinedSheetNameOrNull(string sheetName)
+        internal static string RefinedSheetNameOrNull(in string sheetName)
         {
             MatchCollection matches = rx.Matches(sheetName);
             if (matches.Count != 1)
@@ -67,7 +67,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
             return value;
         }
 
-        static E_TYPE GetSheetInfoType(string sheetName)
+        static E_TYPE GetSheetInfoType(in string sheetName)
         {
             if (IsIgnoreSheetName(sheetName))
             {
@@ -84,7 +84,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
             return E_TYPE.CLASS;
         }
 
-        internal static int GetColumnCount(ISheet sheet)
+        internal static int GetColumnCount(in ISheet sheet)
         {
             // 첫row에서 마지막 column을 찾는다
             IRow row = sheet.GetRow(0);
@@ -113,7 +113,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
             return -1;
         }
 
-        internal static int GetRowCount(ISheet sheet)
+        internal static int GetRowCount(in ISheet sheet)
         {
             // row를 내려가며 마지막 row를 찾는다.
             for (int rowIndex = 0; rowIndex <= sheet.LastRowNum; ++rowIndex)

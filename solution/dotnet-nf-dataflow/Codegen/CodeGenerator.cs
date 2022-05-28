@@ -1,6 +1,5 @@
 ﻿using DotLiquid;
 using NF.Tools.DataFlow.CodeGen.Internal;
-using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
@@ -14,126 +13,116 @@ namespace NF.Tools.DataFlow.CodeGen
 {
     public class CodeGenerator
     {
-        public readonly record struct CodeGenInfo(List<WorkbookResultInfo> WorkbookResultInfos);
-
-        public readonly record struct WorkbookResultInfo(WorkbookInfo WorkbookInfo, List<RenderResult> RenderResults);
-        public readonly record struct RenderResult(string Contents, string OutputFpath);
-
-        internal static bool TryGetCodeGenInfo(CodeGeneratorOptions opt, out CodeGenInfo outCodeGenInfo)
+        public readonly struct CodeGenInfo
         {
+            public List<WorkbookResultInfo> WorkbookResultInfos { get; init; }
+        }
 
+        public record struct WorkbookResultInfo
+        {
+            public WorkbookInfo WorkbookInfo { get; init; }
+            public List<RenderResult> RenderResults { get; init; }
+        }
+
+        public record struct RenderResult
+        {
+            public string Contents { get; init; }
+            public string OutputFpath { get; init; }
+        }
+
+
+        internal static bool TryGetCodeGenInfo(in CodeGeneratorOptions opt, out CodeGenInfo outCodeGenInfo)
+        {
+            DateTime date = DateTime.Now;
+
+            // preload templates
             string templateStrConst = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateConstPath, "const.liquid");
             string templateStrEnum = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateEnumPath, "enum.liquid");
             string templateStrClass = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateClassPath, "class.liquid");
-            Template templateConst;
-            Template templateEnum;
-            Template templateClass;
+            Template templateConst = Template.Parse(templateStrConst);
+            Template templateEnum = Template.Parse(templateStrEnum);
+            Template templateClass = Template.Parse(templateStrClass);
 
-            templateConst = Template.Parse(templateStrConst);
-            templateEnum = Template.Parse(templateStrEnum);
-            templateClass = Template.Parse(templateStrClass);
+            // generate workbookresultinfo from input excel paths
             List<string> excelPaths = GetExcelFpaths(opt.InputExcelPaths);
-            List<WorkbookResultInfo> rrs = new List<WorkbookResultInfo>(excelPaths.Count);
-
+            List<WorkbookResultInfo> wris = new List<WorkbookResultInfo>(excelPaths.Count);
             foreach (string excelPath in excelPaths)
             {
-                IWorkbook excel = _getExcelDataReader(excelPath);
-                if (!TryGetWorkbookResultInfo(excel, out WorkbookResultInfo workbookResultInfo))
+                using (FileStream fileStream = File.Open(excelPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                 {
-                    continue;
-                }
-                List<RenderResult> xs = workbookResultInfo.RenderResults;
-                if (xs == null)
-                {
-                    outCodeGenInfo = default;
-                    return false;
-                }
-                rrs.Add(workbookResultInfo);
-            }
+                    XSSFWorkbook excel = new XSSFWorkbook(fileStream);
+                    // force evaulate! NPOI.XSSF.UserModel.XSSFFormulaEvaluator.EvaluateAllFormulaCells(workbook)
 
-            if (rrs.Count == 0)
+                    if (!WorkbookInfo.TryGetWorkbookInfo(excel, opt, out WorkbookInfo workbookInfo))
+                    {
+                        continue;
+                    }
+
+                    List<RenderResult> rrs = new List<RenderResult>(workbookInfo.ClassSheets.Length + workbookInfo.ConstSheets.Length + workbookInfo.EnumSheets.Length);
+                    foreach (ClassSheet data in workbookInfo.ClassSheets)
+                    {
+                        string n = data.sheet_info.sheet_name;
+                        if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
+                        {
+                            if (string.IsNullOrEmpty(cell.CellString))
+                            {
+                                n = cell.CellString;
+                            }
+                        }
+                        string outputPathClass = $"{opt.OutputDir}/{n}.cs";
+                        Hash o = Hash.FromAnonymousObject(new { date, data });
+                        string rendered = templateClass.Render(o);
+                        rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
+                    }
+                    foreach (ConstSheet data in workbookInfo.ConstSheets)
+                    {
+                        string n = data.sheet_info.sheet_name;
+                        if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
+                        {
+                            if (string.IsNullOrEmpty(cell.CellString))
+                            {
+                                n = cell.CellString;
+                            }
+                        }
+                        string outputPathClass = $"{opt.OutputDir}/{n}.cs";
+                        Hash o = Hash.FromAnonymousObject(new { date, data });
+                        string rendered = templateConst.Render(o);
+                        rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
+                    }
+                    foreach (EnumSheet data in workbookInfo.EnumSheets)
+                    {
+                        string n = data.sheet_info.sheet_name;
+                        if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
+                        {
+                            if (string.IsNullOrEmpty(cell.CellString))
+                            {
+                                n = cell.CellString;
+                            }
+                        }
+                        string outputPathClass = $"{opt.OutputDir}/{n}.cs";
+                        Hash o = Hash.FromAnonymousObject(new { date, data });
+                        string rendered = templateEnum.Render(o);
+                        rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
+                    }
+                    WorkbookResultInfo workbookResultInfo = new WorkbookResultInfo { WorkbookInfo = workbookInfo, RenderResults = rrs };
+                    List<RenderResult> xs = workbookResultInfo.RenderResults;
+                    if (xs == null)
+                    {
+                        continue;
+                    }
+                    wris.Add(workbookResultInfo);
+                }
+            }
+            if (wris.Count == 0)
             {
                 outCodeGenInfo = default;
                 return false;
             }
-
-            outCodeGenInfo = new CodeGenInfo(rrs);
+            outCodeGenInfo = new CodeGenInfo { WorkbookResultInfos = wris };
             return true;
-
-            // ========================================
-            IWorkbook _getExcelDataReader(string excelFpath)
-            {
-                using (FileStream fileStream = File.Open(excelFpath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    XSSFWorkbook workbook = new XSSFWorkbook(fileStream);
-                    // force evaulate! NPOI.XSSF.UserModel.XSSFFormulaEvaluator.EvaluateAllFormulaCells(workbook)
-                    return workbook;
-                }
-            }
-
-            bool TryGetWorkbookResultInfo(IWorkbook excel, out WorkbookResultInfo outWorkbookResultInfo)
-            {
-                DateTime date = DateTime.Now;
-
-                if (!WorkbookInfo.TryGetWorkbookInfo(excel, opt, out WorkbookInfo workbookInfo))
-                {
-                    // 
-                    outWorkbookResultInfo = default(WorkbookResultInfo);
-                    return false;
-                }
-
-                List<RenderResult> rrs = new List<RenderResult>(workbookInfo.ClassSheets.Length + workbookInfo.ConstSheets.Length + workbookInfo.EnumSheets.Length);
-                foreach (ClassSheet data in workbookInfo.ClassSheets)
-                {
-                    string n = data.sheet_info.sheet_name;
-                    if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
-                    {
-                        if (string.IsNullOrEmpty(cell.CellString))
-                        {
-                            n = cell.CellString;
-                        }
-                    }
-                    string outputPathClass = $"{opt.OutputDir}/{n}.cs";
-                    Hash o = Hash.FromAnonymousObject(new { date, data });
-                    string rendered = templateClass.Render(o);
-                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
-                }
-                foreach (ConstSheet data in workbookInfo.ConstSheets)
-                {
-                    string n = data.sheet_info.sheet_name;
-                    if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
-                    {
-                        if (string.IsNullOrEmpty(cell.CellString))
-                        {
-                            n = cell.CellString;
-                        }
-                    }
-                    string outputPathClass = $"{opt.OutputDir}/{n}.cs";
-                    Hash o = Hash.FromAnonymousObject(new { date, data });
-                    string rendered = templateConst.Render(o);
-                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
-                }
-                foreach (EnumSheet data in workbookInfo.EnumSheets)
-                {
-                    string n = data.sheet_info.sheet_name;
-                    if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
-                    {
-                        if (string.IsNullOrEmpty(cell.CellString))
-                        {
-                            n = cell.CellString;
-                        }
-                    }
-                    string outputPathClass = $"{opt.OutputDir}/{n}.cs";
-                    Hash o = Hash.FromAnonymousObject(new { date, data });
-                    string rendered = templateEnum.Render(o);
-                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
-                }
-                outWorkbookResultInfo = new WorkbookResultInfo { WorkbookInfo = workbookInfo, RenderResults = rrs };
-                return true;
-            }
         }
 
-        public static int Generate(CodeGeneratorOptions opt)
+        public static int Generate(in CodeGeneratorOptions opt)
         {
             if (string.IsNullOrEmpty(opt.OutputDir))
             {
@@ -160,7 +149,7 @@ namespace NF.Tools.DataFlow.CodeGen
             return 0;
         }
 
-        private static List<string> GetExcelFpaths(IEnumerable<string> inputExcelPaths)
+        private static List<string> GetExcelFpaths(in IEnumerable<string> inputExcelPaths)
         {
             int pathCounts = inputExcelPaths.Count();
             List<string> ret = new List<string>(pathCounts);
@@ -193,7 +182,7 @@ namespace NF.Tools.DataFlow.CodeGen
             return ret;
         }
 
-        private static string LoadTemplateOrNull(string templateDir, string templateFPath, string innerPath)
+        private static string LoadTemplateOrNull(in string templateDir, in string templateFPath, in string innerPath)
         {
             if (File.Exists(templateFPath))
             {

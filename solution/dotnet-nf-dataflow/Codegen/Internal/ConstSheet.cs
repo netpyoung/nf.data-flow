@@ -15,7 +15,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
             public string value { get; init; }
             public string desc { get; init; }
 
-            public ContentCell_Const(E_PART Part, string Attr, string Type, string Name, string Value, string Desc)
+            public ContentCell_Const(in E_PART Part, in string Attr, in string Type, in string Name, in string Value, in string Desc)
             {
                 this.part = Part;
                 this.attr = Attr;

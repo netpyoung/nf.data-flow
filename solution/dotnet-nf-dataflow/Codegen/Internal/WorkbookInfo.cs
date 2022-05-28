@@ -5,7 +5,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
 {
     public readonly record struct WorkbookInfo(IWorkbook Excel, ClassSheet[] ClassSheets, EnumSheet[] EnumSheets, ConstSheet[] ConstSheets)
     {
-        public static bool TryGetWorkbookInfo(IWorkbook excel, CodeGeneratorOptions opt, out WorkbookInfo outInfo)
+        public static bool TryGetWorkbookInfo(in IWorkbook excel, in CodeGeneratorOptions opt, out WorkbookInfo outInfo)
         {
             List<ClassSheet> ClassSheets = new(excel.NumberOfSheets);
             List<EnumSheet> EnumSheets = new(excel.NumberOfSheets);

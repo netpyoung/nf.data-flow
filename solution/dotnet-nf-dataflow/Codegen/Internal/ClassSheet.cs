@@ -13,7 +13,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
             public string type { get; init; }
             public string name { get; init; }
             public string desc { get; init; }
-            public ContentCell_Class(E_PART Part, string Attr, string Type, string Name, string Desc)
+            public ContentCell_Class(in E_PART Part, in string Attr, in string Type, in string Name, in string Desc)
             {
                 this.part = Part;
                 this.attr = Attr;
