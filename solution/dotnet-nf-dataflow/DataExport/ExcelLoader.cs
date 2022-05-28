@@ -30,12 +30,12 @@ namespace NF.Tools.DataFlow.DataExport
 
         public List<object> GetDataListOrNull(Type type, string sheetName)
         {
-            if (!_dic.TryGetValue(sheetName, out var wf))
+            if (!_dic.TryGetValue(sheetName, out (WorkbookInfo, ClassSheet) wf))
             {
                 return null;
             }
-            var _info = wf.Item1;
-            var excel = _info.Excel;
+            WorkbookInfo _info = wf.Item1;
+            IWorkbook excel = _info.Excel;
             IFormulaEvaluator _evaluator = excel.GetCreationHelper().CreateFormulaEvaluator();
 
             ClassSheet classSheet = _info.ClassSheets.FirstOrDefault(x => x.sheet_info.sheet_name == sheetName);
@@ -51,9 +51,9 @@ namespace NF.Tools.DataFlow.DataExport
                 .ToArray();
             Dictionary<string, MemberInfo> memberDic = members.ToDictionary(x => x.Name, x => x);
 
-            var sheetInfo = classSheet.sheet_info;
+            SheetInfo sheetInfo = classSheet.sheet_info;
             int nameRowIndex = -1;
-            foreach (var x in classSheet.reserved_dic2)
+            foreach (KeyValuePair<ReservedCell.E_RESERVED, ReservedCell> x in classSheet.reserved_dic2)
             {
                 if (x.Value.Reserved == ReservedCell.E_RESERVED.NAME)
                 {
@@ -66,7 +66,7 @@ namespace NF.Tools.DataFlow.DataExport
             }
 
             Dictionary<string, int> field_indexed_dic = new Dictionary<string, int>();
-            var nameRow = sheetInfo.sheet.GetRow(nameRowIndex);
+            IRow nameRow = sheetInfo.sheet.GetRow(nameRowIndex);
             for (int x = 0; x < sheetInfo.column_max; ++x)
             {
                 ICell cell = nameRow.GetCell(x);

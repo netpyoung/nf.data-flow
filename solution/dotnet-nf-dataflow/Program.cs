@@ -26,11 +26,11 @@ namespace NF.Tools.DataFlow
                     .MapResult(
                         (CodeGeneratorOptions opt) =>
                         {
-                            return new CodeGenerator(opt).Generate();
+                            return CodeGenerator.Generate(opt);
                         },
                         (DataExporterOptions opt) =>
                         {
-                            return new DataExporter(opt).Export();
+                            return DataExporter.Export(opt);
                         },
                         errs => 1);
             }

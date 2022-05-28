@@ -5,6 +5,7 @@ using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -18,61 +19,21 @@ namespace NF.Tools.DataFlow.CodeGen
         public readonly record struct WorkbookResultInfo(WorkbookInfo WorkbookInfo, List<RenderResult> RenderResults);
         public readonly record struct RenderResult(string Contents, string OutputFpath);
 
-        private readonly CodeGeneratorOptions _opt;
-        private readonly Template _templateConst;
-        private readonly Template _templateEnum;
-        private readonly Template _templateClass;
-
-        public CodeGenerator(CodeGeneratorOptions opt)
+        internal static bool TryGetCodeGenInfo(CodeGeneratorOptions opt, out CodeGenInfo outCodeGenInfo)
         {
-            this._opt = opt;
 
-            string templateStrConst = _LoadTemplateOrNull(opt.TemplateDir, opt.TemplateConstPath, "const.liquid");
-            string templateStrEnum = _LoadTemplateOrNull(opt.TemplateDir, opt.TemplateEnumPath, "enum.liquid");
-            string templateStrClass = _LoadTemplateOrNull(opt.TemplateDir, opt.TemplateClassPath, "class.liquid");
+            string templateStrConst = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateConstPath, "const.liquid");
+            string templateStrEnum = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateEnumPath, "enum.liquid");
+            string templateStrClass = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateClassPath, "class.liquid");
+            Template templateConst;
+            Template templateEnum;
+            Template templateClass;
 
-            _templateConst = _getGenerator(templateStrConst);
-            _templateEnum = _getGenerator(templateStrEnum);
-            _templateClass = _getGenerator(templateStrClass);
-            // =======================================================
-
-            string _LoadTemplateOrNull(string templateDir, string templateFPath, string innerPath)
-            {
-                if (File.Exists(templateFPath))
-                {
-                    return File.ReadAllText(templateFPath);
-                }
-
-                if (!string.IsNullOrEmpty(templateDir))
-                {
-                    string path = Path.Combine(templateDir, innerPath);
-                    if (!File.Exists(path))
-                    {
-                        return null;
-                    }
-                    return File.ReadAllText(path);
-                }
-
-                using (Stream stream = typeof(Program).Assembly.GetManifestResourceStream(innerPath))
-                using (StreamReader reader = new StreamReader(stream))
-                {
-                    return reader.ReadToEnd();
-                }
-            }
-
-            Template _getGenerator(string template)
-            {
-                //FormatCompiler compiler = new FormatCompiler { RemoveNewLines = false };
-                //compiler.RegisterTag(this.Tag, true);
-                //return compiler.Compile(template);
-                return Template.Parse(template);
-            }
-        }
-
-        public bool TryGetCodeGenInfo(out CodeGenInfo outCodeGenInfo)
-        {
-            var excelPaths = Directory.GetFiles(_opt.InputExcelDir, "*.xlsx");
-            List<WorkbookResultInfo> rrs = new List<WorkbookResultInfo>(excelPaths.Length);
+            templateConst = Template.Parse(templateStrConst);
+            templateEnum = Template.Parse(templateStrEnum);
+            templateClass = Template.Parse(templateStrClass);
+            List<string> excelPaths = GetExcelFpaths(opt.InputExcelPaths);
+            List<WorkbookResultInfo> rrs = new List<WorkbookResultInfo>(excelPaths.Count);
 
             foreach (string excelPath in excelPaths)
             {
@@ -89,6 +50,13 @@ namespace NF.Tools.DataFlow.CodeGen
                 }
                 rrs.Add(workbookResultInfo);
             }
+
+            if (rrs.Count == 0)
+            {
+                outCodeGenInfo = default;
+                return false;
+            }
+
             outCodeGenInfo = new CodeGenInfo(rrs);
             return true;
 
@@ -107,7 +75,7 @@ namespace NF.Tools.DataFlow.CodeGen
             {
                 DateTime date = DateTime.Now;
 
-                if (!WorkbookInfo.TryGetWorkbookInfo(excel, _opt, out WorkbookInfo workbookInfo))
+                if (!WorkbookInfo.TryGetWorkbookInfo(excel, opt, out WorkbookInfo workbookInfo))
                 {
                     // 
                     outWorkbookResultInfo = default(WorkbookResultInfo);
@@ -125,9 +93,9 @@ namespace NF.Tools.DataFlow.CodeGen
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{_opt.OutputDir}/{n}.cs";
+                    string outputPathClass = $"{opt.OutputDir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
-                    string rendered = _templateClass.Render(o);
+                    string rendered = templateClass.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
                 }
                 foreach (ConstSheet data in workbookInfo.ConstSheets)
@@ -140,9 +108,9 @@ namespace NF.Tools.DataFlow.CodeGen
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{_opt.OutputDir}/{n}.cs";
+                    string outputPathClass = $"{opt.OutputDir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
-                    string rendered = _templateConst.Render(o);
+                    string rendered = templateConst.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
                 }
                 foreach (EnumSheet data in workbookInfo.EnumSheets)
@@ -155,9 +123,9 @@ namespace NF.Tools.DataFlow.CodeGen
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{_opt.OutputDir}/{n}.cs";
+                    string outputPathClass = $"{opt.OutputDir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
-                    string rendered = _templateEnum.Render(o);
+                    string rendered = templateEnum.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
                 }
                 outWorkbookResultInfo = new WorkbookResultInfo { WorkbookInfo = workbookInfo, RenderResults = rrs };
@@ -165,39 +133,87 @@ namespace NF.Tools.DataFlow.CodeGen
             }
         }
 
-        public int Generate()
+        public static int Generate(CodeGeneratorOptions opt)
         {
-            if (string.IsNullOrEmpty(_opt.OutputDir))
+            if (string.IsNullOrEmpty(opt.OutputDir))
             {
                 return 1;
             }
 
-            if (!Directory.Exists(_opt.OutputDir))
-            {
-                Directory.CreateDirectory(_opt.OutputDir);
-            }
-
-            if (!TryGetCodeGenInfo(out CodeGenInfo codeGenInfo))
+            if (!TryGetCodeGenInfo(opt, out CodeGenInfo codeGenInfo))
             {
                 return 1;
             }
+
+            if (!Directory.Exists(opt.OutputDir))
+            {
+                Directory.CreateDirectory(opt.OutputDir);
+            }
+
             foreach (WorkbookResultInfo wris in codeGenInfo.WorkbookResultInfos)
             {
                 foreach (RenderResult rr in wris.RenderResults)
                 {
-                    _writeToFile(rr);
+                    File.WriteAllText(path: rr.OutputFpath, contents: rr.Contents, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
                 }
             }
-
             return 0;
+        }
 
-            // ==============================================================
-            void _writeToFile(RenderResult rr)
+        private static List<string> GetExcelFpaths(IEnumerable<string> inputExcelPaths)
+        {
+            int pathCounts = inputExcelPaths.Count();
+            List<string> ret = new List<string>(pathCounts);
+
+            HashSet<string> set = new HashSet<string>(pathCounts);
+            foreach (string path in inputExcelPaths)
             {
-                using (StreamWriter sw = new StreamWriter(rr.OutputFpath, false, new UTF8Encoding(false)))
+                FileAttributes attr = File.GetAttributes(path);
+                if (attr.HasFlag(FileAttributes.Directory))
                 {
-                    sw.Write(rr.Contents);
+                    string[] pathsInDir = Directory.GetFiles(path, "*.xlsx");
+                    foreach (string pathIndir in pathsInDir)
+                    {
+                        if (!set.Add(pathIndir))
+                        {
+                            ret.Add(pathIndir);
+                        }
+                    }
                 }
+                else
+                {
+                    if (!set.Add(path))
+                    {
+                        ret.Add(path);
+                    }
+                }
+            }
+            set.Clear();
+
+            return ret;
+        }
+
+        private static string LoadTemplateOrNull(string templateDir, string templateFPath, string innerPath)
+        {
+            if (File.Exists(templateFPath))
+            {
+                return File.ReadAllText(templateFPath);
+            }
+
+            if (!string.IsNullOrEmpty(templateDir))
+            {
+                string path = Path.Combine(templateDir, innerPath);
+                if (!File.Exists(path))
+                {
+                    return null;
+                }
+                return File.ReadAllText(path);
+            }
+
+            using (Stream stream = typeof(Program).Assembly.GetManifestResourceStream(innerPath))
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
             }
         }
     }
