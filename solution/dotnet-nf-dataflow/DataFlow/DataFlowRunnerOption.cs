@@ -6,7 +6,7 @@ namespace NF.Tools.DataFlow
     [Verb("code-gen", HelpText = "generate code from exel.")]
     public class DataFlowRunnerOption
     {
-        [Option('i', "input_paths", Default = "input")]
+        [Option('i', "input_paths", Default = new string[] { "input" })]
         public IEnumerable<string> input_paths { get; set; }
 
         [Option('o', "output_code_dir", Default = "output", HelpText = "output directory")]
