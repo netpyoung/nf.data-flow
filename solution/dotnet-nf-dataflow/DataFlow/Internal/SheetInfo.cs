@@ -49,7 +49,7 @@ namespace NF.Tools.DataFlow.Internal
             int columMax = GetColumnCount(sheet);
             int rowMax = GetRowCount(sheet);
             string refinedSheetName = RefinedSheetNameOrNull(sheetName);
-            string sheetNamespace = opt.Namespace;
+            string sheetNamespace = opt.@namespace;
             outInfo = new SheetInfo(sheet, refinedSheetName, sheetNamespace, sheetInfoType, rowMax, columMax);
             return true;
         }

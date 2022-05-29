@@ -36,7 +36,7 @@ namespace NF.Tools.DataFlow
 
         public static int Run(in DataFlowRunnerOption opt)
         {
-            if (string.IsNullOrEmpty(opt.OutputCodeDir) || string.IsNullOrEmpty(opt.OutputDbPath))
+            if (string.IsNullOrEmpty(opt.output_code_dir) || string.IsNullOrEmpty(opt.output_db_path))
             {
                 return 1;
             }
@@ -51,14 +51,14 @@ namespace NF.Tools.DataFlow
                 return 1;
             }
 
-            if (!string.IsNullOrEmpty(opt.OutputCodeDir))
+            if (!string.IsNullOrEmpty(opt.output_code_dir))
             {
-                GenerateCode(rrs, opt.OutputCodeDir);
+                GenerateCode(rrs, opt.output_code_dir);
             }
 
-            if (!string.IsNullOrEmpty(opt.OutputDbPath))
+            if (!string.IsNullOrEmpty(opt.output_db_path))
             {
-                E_GENERATE_DB_RESULT dbResult = GenerateDb(workbookInfos, rrs, opt.Password, opt.OutputDbPath);
+                E_GENERATE_DB_RESULT dbResult = GenerateDb(workbookInfos, rrs, opt.password, opt.output_db_path);
                 if (dbResult != E_GENERATE_DB_RESULT.OK)
                 {
                     return 1;
@@ -173,9 +173,9 @@ namespace NF.Tools.DataFlow
             List<RenderResult> rrs = new List<RenderResult>(sum);
 
             // preload templates
-            string templateStrConst = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateConstPath, "const.liquid");
-            string templateStrEnum = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateEnumPath, "enum.liquid");
-            string templateStrClass = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateClassPath, "class.liquid");
+            string templateStrConst = LoadTemplateOrNull(opt.template_dir, opt.template_const, "const.liquid");
+            string templateStrEnum = LoadTemplateOrNull(opt.template_dir, opt.template_enum, "enum.liquid");
+            string templateStrClass = LoadTemplateOrNull(opt.template_dir, opt.template_class, "class.liquid");
             Template.NamingConvention = new CSharpNamingConvention();
             Template templateConst = Template.Parse(templateStrConst);
             Template templateEnum = Template.Parse(templateStrEnum);
@@ -195,7 +195,7 @@ namespace NF.Tools.DataFlow
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{opt.OutputCodeDir}/{n}.cs";
+                    string outputPathClass = $"{opt.output_code_dir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateClass.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
@@ -211,7 +211,7 @@ namespace NF.Tools.DataFlow
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{opt.OutputCodeDir}/{n}.cs";
+                    string outputPathClass = $"{opt.output_code_dir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateConst.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
@@ -227,7 +227,7 @@ namespace NF.Tools.DataFlow
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{opt.OutputCodeDir}/{n}.cs";
+                    string outputPathClass = $"{opt.output_code_dir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateEnum.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
@@ -238,7 +238,7 @@ namespace NF.Tools.DataFlow
 
         internal static bool TryGetWorkbookInfos(in DataFlowRunnerOption opt, out WorkbookInfo[] outWorkbookInfos)
         {
-            List<string> excelPaths = GetExcelFpaths(opt.InputExcelPaths);
+            List<string> excelPaths = GetExcelFpaths(opt.input_paths);
             if (excelPaths.Count == 0)
             {
                 outWorkbookInfos = default;

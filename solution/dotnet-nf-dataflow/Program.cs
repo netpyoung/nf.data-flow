@@ -1,5 +1,7 @@
 ﻿using CommandLine;
 using System;
+using System.IO;
+using YamlDotNet.Serialization;
 
 namespace NF.Tools.DataFlow
 {
@@ -19,6 +21,20 @@ namespace NF.Tools.DataFlow
             {
                 try
                 {
+                    if (File.Exists(opt.config))
+                    {
+                        string configYamlStr = File.ReadAllText(opt.config);
+                        IDeserializer deserializer = new DeserializerBuilder().Build();
+                        DataFlowRunnerOption yaml = deserializer.Deserialize<DataFlowRunnerOption>(configYamlStr);
+                        if (yaml == null)
+                        {
+                            return DataFlowRunner.Run(opt);
+                        }
+                    
+                        yaml.Merge(opt);
+                        return DataFlowRunner.Run(yaml);
+                    }
+
                     return DataFlowRunner.Run(opt);
                 }
                 catch (Exception e)
