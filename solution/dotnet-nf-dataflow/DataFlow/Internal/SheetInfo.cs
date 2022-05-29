@@ -2,7 +2,7 @@
 using NPOI.SS.UserModel;
 using System.Text.RegularExpressions;
 
-namespace NF.Tools.DataFlow.CodeGen.Internal
+namespace NF.Tools.DataFlow.Internal
 {
     public class SheetInfo : Drop
     {
@@ -37,7 +37,7 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
         static bool IsEnumSheetName(in string sheetName) => sheetName.StartsWith("@");
         static bool IsIgnoreSheetName(in string sheetName) => sheetName.StartsWith("#");
 
-        public static bool TryGetSheetInfo(in ISheet sheet, in CodeGeneratorOptions opt, out SheetInfo outInfo)
+        public static bool TryGetSheetInfo(in ISheet sheet, in DataFlowRunnerOption opt, out SheetInfo outInfo)
         {
             string sheetName = sheet.SheetName;
             SheetInfo.E_TYPE sheetInfoType = GetSheetInfoType(sheetName);

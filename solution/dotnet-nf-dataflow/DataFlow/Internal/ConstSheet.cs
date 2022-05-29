@@ -2,7 +2,7 @@
 using NPOI.SS.UserModel;
 using System.Collections.Generic;
 
-namespace NF.Tools.DataFlow.CodeGen.Internal
+namespace NF.Tools.DataFlow.Internal
 {
     public class ConstSheet : Drop
     {

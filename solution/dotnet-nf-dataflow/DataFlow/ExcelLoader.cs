@@ -1,4 +1,4 @@
-﻿using NF.Tools.DataFlow.CodeGen.Internal;
+﻿using NF.Tools.DataFlow.Internal;
 using NPOI.SS.UserModel;
 using System;
 using System.Collections.Generic;
@@ -6,15 +6,15 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
-namespace NF.Tools.DataFlow.DataExport
+namespace NF.Tools.DataFlow
 {
     public class ExcelLoader
     {
         Dictionary<string, (WorkbookInfo, ClassSheet)> _dic = new Dictionary<string, (WorkbookInfo, ClassSheet)>();
 
-        public ExcelLoader(in List<WorkbookInfo> workbookInfos)
+        public ExcelLoader(in WorkbookInfo[] workbookInfos)
         {
-            foreach (WorkbookInfo wri in workbookInfos)
+            foreach (ref readonly WorkbookInfo wri in workbookInfos.AsSpan())
             {
                 foreach (ClassSheet classSheet in wri.ClassSheets)
                 {
@@ -29,7 +29,7 @@ namespace NF.Tools.DataFlow.DataExport
             {
                 return null;
             }
-            WorkbookInfo _info = wf.Item1;
+            ref readonly WorkbookInfo _info = ref wf.Item1;
             IWorkbook excel = _info.Excel;
             IFormulaEvaluator _evaluator = excel.GetCreationHelper().CreateFormulaEvaluator();
 

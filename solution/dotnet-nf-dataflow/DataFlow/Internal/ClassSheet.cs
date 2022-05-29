@@ -1,45 +1,42 @@
 ﻿using DotLiquid;
 using NPOI.SS.UserModel;
 using System.Collections.Generic;
-using System.Diagnostics;
 
-namespace NF.Tools.DataFlow.CodeGen.Internal
+namespace NF.Tools.DataFlow.Internal
 {
-    public class EnumSheet : Drop
+    public class ClassSheet : Drop
     {
-        public class ContentCell_Enum : Drop
+        public class ContentCell_Class : Drop
         {
+            public E_PART part { get; init; }
             public string attr { get; init; }
+            public string type { get; init; }
             public string name { get; init; }
-            public string value { get; init; }
             public string desc { get; init; }
-            public ContentCell_Enum(in string Attr, in string Name, in string Value, in string Desc)
+            public ContentCell_Class(in E_PART Part, in string Attr, in string Type, in string Name, in string Desc)
             {
+                this.part = Part;
                 this.attr = Attr;
+                this.type = Type;
                 this.name = Name;
-                this.value = Value;
                 this.desc = Desc;
             }
         }
+
         public SheetInfo sheet_info { get; init; }
-        public ContentCell_Enum[] contents { get; init; }
+        public string sheet_namespace { get; init; }
+        public ContentCell_Class[] contents { get; init; }
         public Dictionary<ReservedCell.E_RESERVED, ReservedCell> reserved_dic { get; init; }
+        public Dictionary<ReservedCell.E_RESERVED, ReservedCell> reserved_dic2 { get; init; }
 
         // ==============================================================
-        private static Dictionary<string, ReservedCell.E_RESERVED> CONTENT_DIC = new Dictionary<string, ReservedCell.E_RESERVED>()
-        {
-            {nameof(ReservedCell.E_RESERVED.ATTR), ReservedCell.E_RESERVED.ATTR },
-            {nameof(ReservedCell.E_RESERVED.NAME), ReservedCell.E_RESERVED.NAME },
-            {nameof(ReservedCell.E_RESERVED.VALUE), ReservedCell.E_RESERVED.VALUE },
-            {nameof(ReservedCell.E_RESERVED.DESC), ReservedCell.E_RESERVED.DESC },
-        };
-
-        public static EnumSheet GetOrNull(in SheetInfo sheetInfo)
+        public static ClassSheet GetOrNull(in SheetInfo sheetInfo)
         {
             int contentsStartRowIndex = -1;
             Dictionary<ReservedCell.E_RESERVED, ReservedCell> reservedDic = new();
+            Dictionary<ReservedCell.E_RESERVED, ReservedCell> reservedDic2 = new();
 
-            for (int y = 0; y < 4; ++y)
+            for (int y = 0; y < sheetInfo.row_max; ++y)
             {
                 IRow row = sheetInfo.sheet.GetRow(y);
 
@@ -103,32 +100,61 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
                         });
                     continue;
                 }
-                if (CONTENT_DIC.ContainsKey(cellValue))
+
+                // ====================================
+                if (cellValue == nameof(ReservedCell.E_RESERVED.ATTR))
                 {
-                    for (int x = 0; x < sheetInfo.column_max; ++x)
-                    {
-                        ICell ccell = row.GetCell(x);
-                        string ccellValue = ccell.StringOrNull();
-                        if (ccellValue == null)
+                    reservedDic2.Add(ReservedCell.E_RESERVED.ATTR,
+                        new ReservedCell
                         {
-                            return null;
-                        }
-                        if (ccellValue.StartsWith('_'))
+                            Reserved = ReservedCell.E_RESERVED.ATTR,
+                            Position = new int2(0, y),
+                        });
+                    continue;
+                }
+                if (cellValue == nameof(ReservedCell.E_RESERVED.TYPE))
+                {
+                    reservedDic2.Add(ReservedCell.E_RESERVED.TYPE,
+                        new ReservedCell
                         {
-                            continue;
-                        }
-                        if (!CONTENT_DIC.TryGetValue(ccellValue, out ReservedCell.E_RESERVED e))
+                            Reserved = ReservedCell.E_RESERVED.TYPE,
+                            Position = new int2(0, y),
+                        });
+                    continue;
+                }
+                if (cellValue == nameof(ReservedCell.E_RESERVED.NAME))
+                {
+                    reservedDic2.Add(ReservedCell.E_RESERVED.NAME,
+                        new ReservedCell
                         {
-                            return null;
-                        }
-                        reservedDic.Add(e,
-                            new ReservedCell
-                            {
-                                Reserved = e,
-                                Position = new int2(x, y)
-                            });
-                    }
-                    contentsStartRowIndex = y + 1;
+                            Reserved = ReservedCell.E_RESERVED.NAME,
+                            Position = new int2(0, y),
+                        });
+                    continue;
+                }
+                if (cellValue == nameof(ReservedCell.E_RESERVED.DESC))
+                {
+                    reservedDic2.Add(ReservedCell.E_RESERVED.DESC,
+                        new ReservedCell
+                        {
+                            Reserved = ReservedCell.E_RESERVED.DESC,
+                            Position = new int2(0, y),
+                        });
+                    continue;
+                }
+                if (cellValue == nameof(ReservedCell.E_RESERVED.PART))
+                {
+                    reservedDic2.Add(ReservedCell.E_RESERVED.PART,
+                        new ReservedCell
+                        {
+                            Reserved = ReservedCell.E_RESERVED.PART,
+                            Position = new int2(0, y),
+                        });
+                    continue;
+                }
+                if (cellValue == nameof(ReservedCell.E_RESERVED.VALUE))
+                {
+                    contentsStartRowIndex = y;
                     break;
                 }
             }
@@ -138,40 +164,54 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
                 return null;
             }
 
-            // fill contents
-            ContentCell_Enum[] cs = new ContentCell_Enum[sheetInfo.row_max - contentsStartRowIndex];
-            for (int y = contentsStartRowIndex; y < sheetInfo.row_max; ++y)
+            ContentCell_Class[] cs = new ContentCell_Class[sheetInfo.column_max - 1];
+            for (int x = 1; x < sheetInfo.column_max; ++x)
             {
-                IRow row = sheetInfo.sheet.GetRow(y);
+                E_PART part = E_PART.Common;
                 string attr = null;
+                string type = null;
                 string name = null;
-                string val = null;
+                string value = null;
                 string desc = null;
-                foreach (ReservedCell v in reservedDic.Values)
+                foreach (KeyValuePair<ReservedCell.E_RESERVED, ReservedCell> c in reservedDic2)
                 {
-                    switch (v.Reserved)
+                    int y = c.Value.Position.y;
+                    IRow row = sheetInfo.sheet.GetRow(y);
+                    ICell cell = row.GetCell(x);
+                    switch (c.Key)
                     {
+                        case ReservedCell.E_RESERVED.PART:
+                            {
+                                part = cell.StringOrNull() switch
+                                {
+                                    "Client" => E_PART.Client,
+                                    "Server" => E_PART.Server,
+                                    _ => E_PART.Common,
+                                };
+                            }
+                            break;
                         case ReservedCell.E_RESERVED.ATTR:
                             {
-                                ICell cell = row.GetCell(v.Position.x);
                                 attr = cell.StringOrNull();
+                            }
+                            break;
+                        case ReservedCell.E_RESERVED.TYPE:
+                            {
+                                type = cell.StringOrNull();
                             }
                             break;
                         case ReservedCell.E_RESERVED.NAME:
                             {
-                                ICell cell = row.GetCell(v.Position.x);
                                 name = cell.StringOrNull();
                             }
                             break;
                         case ReservedCell.E_RESERVED.VALUE:
                             {
-                                ICell cell = row.GetCell(v.Position.x);
-                                val = cell.StringOrNull();
+                                value = cell.StringOrNull();
                             }
                             break;
                         case ReservedCell.E_RESERVED.DESC:
                             {
-                                ICell cell = row.GetCell(v.Position.x);
                                 desc = cell.StringOrNull();
                             }
                             break;
@@ -179,14 +219,14 @@ namespace NF.Tools.DataFlow.CodeGen.Internal
                             break;
                     }
                 }
-                cs[y - contentsStartRowIndex] = new ContentCell_Enum(attr, name, val, desc);
+                cs[x - 1] = new ContentCell_Class(part, attr, type, name, desc);
             }
-
-            EnumSheet ret = new EnumSheet
+            ClassSheet ret = new ClassSheet
             {
                 sheet_info = sheetInfo,
                 contents = cs,
                 reserved_dic = reservedDic,
+                reserved_dic2 = reservedDic2,
             };
             return ret;
         }

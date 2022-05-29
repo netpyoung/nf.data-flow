@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace NF.Tools.DataFlow.CodeGen.Internal
+namespace NF.Tools.DataFlow.Internal
 {
     [DebuggerDisplay("<ReservedCell({Reserved}|{CellString}|{Position})>")]
     public class ReservedCell

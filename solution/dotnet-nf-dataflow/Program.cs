@@ -1,10 +1,5 @@
-﻿using System;
-using System.IO;
-using CommandLine;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using NF.Tools.DataFlow.CodeGen;
-using NF.Tools.DataFlow.DataExport;
+﻿using CommandLine;
+using System;
 
 namespace NF.Tools.DataFlow
 {
@@ -18,27 +13,26 @@ namespace NF.Tools.DataFlow
             //    OutputDatabasePath = "output.db",
             //};
             //return new DataExporter(opt).Export();
-          
 
-            try
+            ParserResult<DataFlowRunnerOption> parseResult = Parser.Default.ParseArguments<DataFlowRunnerOption>(args);
+            int shellExitStatus = parseResult.MapResult(opt =>
             {
-                return Parser.Default.ParseArguments<CodeGeneratorOptions, DataExporterOptions>(args)
-                    .MapResult(
-                        (CodeGeneratorOptions opt) =>
-                        {
-                            return CodeGenerator.Generate(opt);
-                        },
-                        (DataExporterOptions opt) =>
-                        {
-                            return DataExporter.Export(opt);
-                        },
-                        errs => 1);
-            }
-            catch (Exception e)
+                try
+                {
+                    return DataFlowRunner.Run(opt);
+                }
+                catch (Exception e)
+                {
+                    Console.Error.WriteLine(e);
+                    return 1;
+                }
+            },
+            err =>
             {
-                Console.Error.WriteLine(e);
+                Console.WriteLine(err);
                 return 1;
-            }
+            });
+            return shellExitStatus;
         }
     }
 }

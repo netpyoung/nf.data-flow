@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NF.Tools.DataFlow.CodeGen.Internal
+namespace NF.Tools.DataFlow.Internal
 {
     public static class ExtSystem
     {

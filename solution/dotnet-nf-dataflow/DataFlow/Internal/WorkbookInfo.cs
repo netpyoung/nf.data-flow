@@ -1,11 +1,11 @@
 ﻿using NPOI.SS.UserModel;
 using System.Collections.Generic;
 
-namespace NF.Tools.DataFlow.CodeGen.Internal
+namespace NF.Tools.DataFlow.Internal
 {
     public readonly record struct WorkbookInfo(IWorkbook Excel, ClassSheet[] ClassSheets, EnumSheet[] EnumSheets, ConstSheet[] ConstSheets)
     {
-        public static bool TryGetWorkbookInfo(in IWorkbook excel, in CodeGeneratorOptions opt, out WorkbookInfo outInfo)
+        public static bool TryGetWorkbookInfo(in IWorkbook excel, in DataFlowRunnerOption opt, out WorkbookInfo outInfo)
         {
             List<ClassSheet> ClassSheets = new(excel.NumberOfSheets);
             List<EnumSheet> EnumSheets = new(excel.NumberOfSheets);

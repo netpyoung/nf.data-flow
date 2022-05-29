@@ -1,11 +1,10 @@
-@startuml
+@startuml flow
 
 user -> rake : rake dataflow
 activate rake
-rake -> nf.dataflow : dotnet nf-dataflow code-gen
-nf.dataflow -> unity : cs
-rake -> nf.dataflow : dotnet nf-dataflow data-export
-nf.dataflow -> unity : db
+rake -> nf.dataflow : dotnet nf-dataflow
+nf.dataflow -> unity : .cs
+nf.dataflow -> unity : .db
 deactivate
 
 @enduml
