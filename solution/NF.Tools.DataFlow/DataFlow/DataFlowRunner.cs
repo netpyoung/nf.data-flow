@@ -36,7 +36,7 @@ namespace NF.Tools.DataFlow
 
         public static int Run(in DataFlowRunnerOption opt)
         {
-            if (string.IsNullOrEmpty(opt.output_code_dir) || string.IsNullOrEmpty(opt.output_db_path))
+            if (string.IsNullOrEmpty(opt.output_code_dir) && string.IsNullOrEmpty(opt.output_db_path))
             {
                 return 1;
             }
