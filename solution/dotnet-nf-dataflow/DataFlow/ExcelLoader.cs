@@ -62,7 +62,7 @@ namespace NF.Tools.DataFlow
 
             Dictionary<string, int> field_indexed_dic = new Dictionary<string, int>();
             IRow nameRow = sheetInfo.sheet.GetRow(nameRowIndex);
-            for (int x = 0; x < sheetInfo.column_max; ++x)
+            for (int x = 0; x < sheetInfo.ColumnMax; ++x)
             {
                 ICell cell = nameRow.GetCell(x);
                 cell.SetCellType(CellType.String);
@@ -73,8 +73,8 @@ namespace NF.Tools.DataFlow
                 }
             }
 
-            List<object> ret = new List<object>(sheetInfo.row_max - nameRowIndex);
-            for (int y = nameRowIndex + 1; y < sheetInfo.row_max; ++y)
+            List<object> ret = new List<object>(sheetInfo.RowMax - nameRowIndex);
+            for (int y = nameRowIndex + 1; y < sheetInfo.RowMax; ++y)
             {
                 IRow row = sheetInfo.sheet.GetRow(y);
 

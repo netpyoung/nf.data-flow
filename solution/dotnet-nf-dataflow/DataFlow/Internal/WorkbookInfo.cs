@@ -19,7 +19,7 @@ namespace NF.Tools.DataFlow.Internal
                     continue;
                 }
 
-                switch (sheetInfo.type)
+                switch (sheetInfo.Type)
                 {
                     case SheetInfo.E_TYPE.CONST:
                         {

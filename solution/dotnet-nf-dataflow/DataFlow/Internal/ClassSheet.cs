@@ -36,7 +36,7 @@ namespace NF.Tools.DataFlow.Internal
             Dictionary<ReservedCell.E_RESERVED, ReservedCell> reservedDic = new();
             Dictionary<ReservedCell.E_RESERVED, ReservedCell> reservedDic2 = new();
 
-            for (int y = 0; y < sheetInfo.row_max; ++y)
+            for (int y = 0; y < sheetInfo.RowMax; ++y)
             {
                 IRow row = sheetInfo.sheet.GetRow(y);
 
@@ -164,8 +164,8 @@ namespace NF.Tools.DataFlow.Internal
                 return null;
             }
 
-            ContentCell_Class[] cs = new ContentCell_Class[sheetInfo.column_max - 1];
-            for (int x = 1; x < sheetInfo.column_max; ++x)
+            ContentCell_Class[] cs = new ContentCell_Class[sheetInfo.ColumnMax - 1];
+            for (int x = 1; x < sheetInfo.ColumnMax; ++x)
             {
                 E_PART part = E_PART.Common;
                 string attr = null;

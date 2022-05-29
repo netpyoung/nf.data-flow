@@ -97,34 +97,32 @@ n6	6	ASDF	Common
 ```
 
 ``` liquid
-data.sheet_info
-data.contents
-
-data.sheet_info.sheet
-data.sheet_info.sheet_name
-data.sheet_info.type
-data.sheet_info.row_max
-data.sheet_info.column_max
+data.SheetInfo.SheetName
+data.SheetInfo.SheetNamespace
+data.SheetInfo.Type           // CONST | ENUM | CLASS
+data.SheetInfo.RowMax
+data.SheetInfo.ColumnMax
 
 
 // const.liquid
-data.contents[0].part
-data.contents[0].attr
-data.contents[0].type
-data.contents[0].name
-data.contents[0].value
-data.contents[0].desc
+data.Contents[0].Part
+data.Contents[0].Attr
+data.Contents[0].Type
+data.Contents[0].Name
+data.Contents[0].Value
+data.Contents[0].Desc
+/// TODO(pyoung): const.liquid에 {%- if content.Type == "string" -%} 로 처리하고 있는데... raw인지 ""감싸는지 구분할 무언가가 필요할듯.
 
 // enum.liquid
-data.contents[0].attr
-data.contents[0].name
-data.contents[0].value
-data.contents[0].desc
+data.Contents[0].Attr
+data.Contents[0].Name
+data.Contents[0].Value
+data.Contents[0].Desc
 
 // class.liquid
-data.contents[0].part
-data.contents[0].attr
-data.contents[0].type
-data.contents[0].name
-data.contents[0].desc
+data.Contents[0].Part
+data.Contents[0].Attr
+data.Contents[0].Type
+data.Contents[0].Name
+data.Contents[0].Desc
 ```

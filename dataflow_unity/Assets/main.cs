@@ -8,7 +8,7 @@ namespace Hello
 	{
 		void Start()
 		{
-			DataService ds = new DataService("Assets/output/output.db");
+			DataService ds = new DataService("Assets/output/output.db", "helloworld");
 			List<SampleCharacter> characters = ds.Gets<SampleCharacter>();
 			foreach (SampleCharacter c in characters)
 			{

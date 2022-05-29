@@ -123,7 +123,7 @@ namespace NF.Tools.DataFlow.Internal
 
                 if (CONTENT_DIC.ContainsKey(cellValue))
                 {
-                    for (int x = 0; x < sheetInfo.column_max; ++x)
+                    for (int x = 0; x < sheetInfo.ColumnMax; ++x)
                     {
                         ICell ccell = row.GetCell(x);
                         string ccellValue = ccell.StringOrNull();
@@ -208,8 +208,8 @@ namespace NF.Tools.DataFlow.Internal
             }
 
             // fill contents
-            ContentCell_Const[] cs = new ContentCell_Const[sheetInfo.row_max - contentsStartRowIndex];
-            for (int y = contentsStartRowIndex; y < sheetInfo.row_max; ++y)
+            ContentCell_Const[] cs = new ContentCell_Const[sheetInfo.RowMax - contentsStartRowIndex];
+            for (int y = contentsStartRowIndex; y < sheetInfo.RowMax; ++y)
             {
                 IRow row = sheetInfo.sheet.GetRow(y);
                 E_PART part = E_PART.Common;

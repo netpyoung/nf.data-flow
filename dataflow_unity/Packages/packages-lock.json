@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.netpyoung.sqlcipher4unity3d": {
+      "version": "https://github.com/netpyoung/SqlCipher4Unity3D.git?path=SqlCipher4Unity3D/Assets/SqlCipher4Unity3D#1.3.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "07a98bd4d832d0a536c91b726731e723450b30bd"
+    },
     "com.unity.ext.nunit": {
       "version": "1.0.6",
       "depth": 0,
