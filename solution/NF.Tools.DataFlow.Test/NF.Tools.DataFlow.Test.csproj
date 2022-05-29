@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\dotnet-nf-dataflow\dotnet-nf-dataflow.csproj" />
+    <ProjectReference Include="..\NF.Tools.DataFlow\NF.Tools.DataFlow.csproj" />
   </ItemGroup>
 
 </Project>

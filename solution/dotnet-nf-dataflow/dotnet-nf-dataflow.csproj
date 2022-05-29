@@ -2,40 +2,14 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>NET6.0</TargetFramework>
+		<TargetFramework>net6.0</TargetFramework>
 		<PackAsTool>true</PackAsTool>
 		<ToolCommandName>dotnet-nf-dataflow</ToolCommandName>
 		<PackageOutputPath>./nupkg</PackageOutputPath>
-		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="CommandLineParser" Version="2.8.0" />
-		<PackageReference Include="NPOI" Version="2.5.6" />
-		<PackageReference Include="SharpZipLib" Version="1.3.3" />
-		<PackageReference Include="DotLiquid" Version="2.2.656" />
-		<PackageReference Include="YamlDotNet" Version="11.2.1" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Include="_native/sqlcipher.dll" CopyToOutputDirectory="Always" TargetPath="sqlcipher.dll" />
-		<None Include="_native/libcrypto-1_1-x64.dll" CopyToOutputDirectory="Always" TargetPath="libcrypto-1_1-x64.dll" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="_embed/template/class.liquid">
-			<LogicalName>class.liquid</LogicalName>
-		</EmbeddedResource>
-		<EmbeddedResource Include="_embed/template/const.liquid">
-			<LogicalName>const.liquid</LogicalName>
-		</EmbeddedResource>
-		<EmbeddedResource Include="_embed/template/enum.liquid">
-			<LogicalName>enum.liquid</LogicalName>
-		</EmbeddedResource>
-		<EmbeddedResource Include="_embed/SQLite.Attributes.txt">
-			<LogicalName>SQLite.Attributes.txt</LogicalName>
-		</EmbeddedResource>
+		<ProjectReference Include="..\NF.Tools.DataFlow\NF.Tools.DataFlow.csproj" />
 	</ItemGroup>
 
 </Project>

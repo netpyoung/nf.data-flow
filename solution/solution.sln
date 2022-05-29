@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet-nf-dataflow", "dotne
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NF.Tools.DataFlow.Test", "NF.Tools.DataFlow.Test\NF.Tools.DataFlow.Test.csproj", "{D99B29C1-4191-4944-9A4D-82B94C778149}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataFlowGUI", "DataFlowGUI\DataFlowGUI.csproj", "{5F41B8BC-EC12-486B-9F98-BAE1CF85ED67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NF.Tools.DataFlow", "NF.Tools.DataFlow\NF.Tools.DataFlow.csproj", "{0814D462-BE17-450D-B167-014D04FDECF7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{D99B29C1-4191-4944-9A4D-82B94C778149}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D99B29C1-4191-4944-9A4D-82B94C778149}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D99B29C1-4191-4944-9A4D-82B94C778149}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F41B8BC-EC12-486B-9F98-BAE1CF85ED67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F41B8BC-EC12-486B-9F98-BAE1CF85ED67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F41B8BC-EC12-486B-9F98-BAE1CF85ED67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F41B8BC-EC12-486B-9F98-BAE1CF85ED67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0814D462-BE17-450D-B167-014D04FDECF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0814D462-BE17-450D-B167-014D04FDECF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0814D462-BE17-450D-B167-014D04FDECF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0814D462-BE17-450D-B167-014D04FDECF7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

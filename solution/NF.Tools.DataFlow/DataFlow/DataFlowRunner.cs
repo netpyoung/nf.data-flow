@@ -89,7 +89,7 @@ namespace NF.Tools.DataFlow
                 trees.Add(syntaxTree);
             }
             // TODO(pyoung): SQLite.Attributes.txt 말고 다른것들도 처리했으면 좋겠는데..
-            using (Stream stream = typeof(Program).Assembly.GetManifestResourceStream("SQLite.Attributes.txt"))
+            using (Stream stream = typeof(DataFlowRunner).Assembly.GetManifestResourceStream("SQLite.Attributes.txt"))
             using (StreamReader reader = new StreamReader(stream))
             {
                 string content = reader.ReadToEnd();
@@ -314,7 +314,7 @@ namespace NF.Tools.DataFlow
                 return File.ReadAllText(path);
             }
 
-            using (Stream stream = typeof(Program).Assembly.GetManifestResourceStream(innerPath))
+            using (Stream stream = typeof(DataFlowRunner).Assembly.GetManifestResourceStream(innerPath))
             using (StreamReader reader = new StreamReader(stream))
             {
                 return reader.ReadToEnd();
