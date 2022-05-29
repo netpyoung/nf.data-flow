@@ -8,24 +8,24 @@ namespace NF.Tools.DataFlow.Internal
     {
         public class ContentCell_Class : Drop
         {
-            public E_PART part { get; init; }
-            public string attr { get; init; }
-            public string type { get; init; }
-            public string name { get; init; }
-            public string desc { get; init; }
+            public E_PART Part { get; init; }
+            public string Attr { get; init; }
+            public string Type { get; init; }
+            public string Name { get; init; }
+            public string Desc { get; init; }
             public ContentCell_Class(in E_PART Part, in string Attr, in string Type, in string Name, in string Desc)
             {
-                this.part = Part;
-                this.attr = Attr;
-                this.type = Type;
-                this.name = Name;
-                this.desc = Desc;
+                this.Part = Part;
+                this.Attr = Attr;
+                this.Type = Type;
+                this.Name = Name;
+                this.Desc = Desc;
             }
         }
 
-        public SheetInfo sheet_info { get; init; }
-        public string sheet_namespace { get; init; }
-        public ContentCell_Class[] contents { get; init; }
+        public SheetInfo SheetInfo { get; init; }
+        public string SheetNamespace { get; init; }
+        public ContentCell_Class[] Contents { get; init; }
         public Dictionary<ReservedCell.E_RESERVED, ReservedCell> reserved_dic { get; init; }
         public Dictionary<ReservedCell.E_RESERVED, ReservedCell> reserved_dic2 { get; init; }
 
@@ -223,8 +223,8 @@ namespace NF.Tools.DataFlow.Internal
             }
             ClassSheet ret = new ClassSheet
             {
-                sheet_info = sheetInfo,
-                contents = cs,
+                SheetInfo = sheetInfo,
+                Contents = cs,
                 reserved_dic = reservedDic,
                 reserved_dic2 = reservedDic2,
             };

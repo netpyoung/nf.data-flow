@@ -1,4 +1,5 @@
 ﻿using DotLiquid;
+using DotLiquid.NamingConventions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -22,7 +23,7 @@ namespace NF.Tools.DataFlow
     {
         public record struct RenderResult
         {
-            public string Contents { get; init; }
+            public string RenderedText { get; init; }
             public string OutputFpath { get; init; }
         }
 
@@ -75,7 +76,7 @@ namespace NF.Tools.DataFlow
 
             foreach (ref readonly RenderResult rr in rrs.AsSpan())
             {
-                File.WriteAllText(path: rr.OutputFpath, contents: rr.Contents, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+                File.WriteAllText(path: rr.OutputFpath, contents: rr.RenderedText, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
             }
         }
 
@@ -84,7 +85,7 @@ namespace NF.Tools.DataFlow
             List<SyntaxTree> trees = new List<SyntaxTree>(rrs.Length + 1);
             foreach (ref readonly DataFlowRunner.RenderResult r in rrs.AsSpan())
             {
-                SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(r.Contents);
+                SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(r.RenderedText);
                 trees.Add(syntaxTree);
             }
             // TODO(pyoung): SQLite.Attributes.txt 말고 다른것들도 처리했으면 좋겠는데..
@@ -175,6 +176,7 @@ namespace NF.Tools.DataFlow
             string templateStrConst = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateConstPath, "const.liquid");
             string templateStrEnum = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateEnumPath, "enum.liquid");
             string templateStrClass = LoadTemplateOrNull(opt.TemplateDir, opt.TemplateClassPath, "class.liquid");
+            Template.NamingConvention = new CSharpNamingConvention();
             Template templateConst = Template.Parse(templateStrConst);
             Template templateEnum = Template.Parse(templateStrEnum);
             Template templateClass = Template.Parse(templateStrClass);
@@ -185,7 +187,7 @@ namespace NF.Tools.DataFlow
             {
                 foreach (ClassSheet data in workbookInfo.ClassSheets)
                 {
-                    string n = data.sheet_info.sheet_name;
+                    string n = data.SheetInfo.SheetName;
                     if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
                     {
                         if (string.IsNullOrEmpty(cell.CellString))
@@ -196,12 +198,12 @@ namespace NF.Tools.DataFlow
                     string outputPathClass = $"{opt.OutputCodeDir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateClass.Render(o);
-                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
+                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
                 }
 
                 foreach (ConstSheet data in workbookInfo.ConstSheets)
                 {
-                    string n = data.sheet_info.sheet_name;
+                    string n = data.SheetInfo.SheetName;
                     if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
                     {
                         if (string.IsNullOrEmpty(cell.CellString))
@@ -212,12 +214,12 @@ namespace NF.Tools.DataFlow
                     string outputPathClass = $"{opt.OutputCodeDir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateConst.Render(o);
-                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
+                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
                 }
 
                 foreach (EnumSheet data in workbookInfo.EnumSheets)
                 {
-                    string n = data.sheet_info.sheet_name;
+                    string n = data.SheetInfo.SheetName;
                     if (data.reserved_dic.TryGetValue(ReservedCell.E_RESERVED.TABLE, out ReservedCell cell))
                     {
                         if (string.IsNullOrEmpty(cell.CellString))
@@ -228,7 +230,7 @@ namespace NF.Tools.DataFlow
                     string outputPathClass = $"{opt.OutputCodeDir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateEnum.Render(o);
-                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, Contents = rendered });
+                    rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
                 }
             }
             return rrs.ToArray();

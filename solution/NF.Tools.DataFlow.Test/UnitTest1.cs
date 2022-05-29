@@ -46,7 +46,7 @@ public class UnitTest1
 
         SheetInfo.TryGetSheetInfo(sheet, opt, out SheetInfo sheetInfo);
         var x = EnumSheet.GetOrNull(sheetInfo);
-        Assert.AreEqual(6, x.contents.Length);
+        Assert.AreEqual(6, x.Contents.Length);
     }
 
     [TestMethod]
@@ -59,7 +59,7 @@ public class UnitTest1
 
         SheetInfo.TryGetSheetInfo(sheet, opt, out SheetInfo sheetInfo);
         var x = ConstSheet.GetOrNull(sheetInfo);
-        Assert.AreEqual(6, x.contents.Length);
+        Assert.AreEqual(6, x.Contents.Length);
     }
 
     [TestMethod]
@@ -72,7 +72,7 @@ public class UnitTest1
 
         SheetInfo.TryGetSheetInfo(sheet, opt, out SheetInfo sheetInfo);
         var x = ClassSheet.GetOrNull(sheetInfo);
-        Assert.AreEqual(4, x.contents.Length);
+        Assert.AreEqual(4, x.Contents.Length);
     }
 
     [TestMethod]

@@ -1,16 +1,16 @@
 using System.ComponentModel;
 
-namespace {{ data.sheet_info.sheet_namespace }}
+namespace {{ data.SheetInfo.SheetNamespace }}
 {
-    public class {{ data.sheet_info.sheet_name }}
+    public class {{ data.SheetInfo.SheetName }}
     {
-        {%- for content in data.contents -%}
-        {{ content.attr }}
-        [Description("{{ content.desc }}")]
-        {%- if content.type == "string" -%}
-        public const {{ content.type }} {{ content.name }} = "{{ content.value }}";
+        {%- for content in data.Contents -%}
+        {{ content.Attr }}
+        [Description("{{ content.Desc }}")]
+        {%- if content.Type == "string" -%}
+        public const {{ content.Type }} {{ content.Name }} = "{{ content.Value }}";
         {%- else -%}
-        public const {{ content.type }} {{ content.name }} = {{ content.value }};
+        public const {{ content.Type }} {{ content.Name }} = {{ content.Value }};
         {%- endif -%}
         {%- endfor -%}
     }

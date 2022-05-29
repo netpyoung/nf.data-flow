@@ -2,15 +2,15 @@ using System;
 using SQLite.Attribute;
 using System.ComponentModel;
 
-namespace {{ data.sheet_info.sheet_namespace }}
+namespace {{ data.SheetInfo.SheetNamespace }}
 {
     [Export]
-    public class {{ data.sheet_info.sheet_name }}
+    public class {{ data.SheetInfo.SheetName }}
     {
-        {%- for content in data.contents -%}
-        {{ content.attr }}
-        [Description("{{ content.desc }}")]
-        public {{ content.type }} {{ content.name }} { get; set; }
+        {%- for content in data.Contents -%}
+        {{ content.Attr }}
+        [Description("{{ content.Desc }}")]
+        public {{ content.Type }} {{ content.Name }} { get; set; }
         {%- endfor -%}
     }
 }

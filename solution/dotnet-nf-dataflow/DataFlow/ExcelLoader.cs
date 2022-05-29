@@ -18,7 +18,7 @@ namespace NF.Tools.DataFlow
             {
                 foreach (ClassSheet classSheet in wri.ClassSheets)
                 {
-                    _dic[classSheet.sheet_info.sheet_name] = (wri, classSheet);
+                    _dic[classSheet.SheetInfo.SheetName] = (wri, classSheet);
                 }
             }
         }
@@ -33,7 +33,7 @@ namespace NF.Tools.DataFlow
             IWorkbook excel = _info.Excel;
             IFormulaEvaluator _evaluator = excel.GetCreationHelper().CreateFormulaEvaluator();
 
-            ClassSheet classSheet = _info.ClassSheets.FirstOrDefault(x => x.sheet_info.sheet_name == sheetName);
+            ClassSheet classSheet = _info.ClassSheets.FirstOrDefault(x => x.SheetInfo.SheetName == sheetName);
             if (classSheet == null)
             {
                 return null;
@@ -46,7 +46,7 @@ namespace NF.Tools.DataFlow
                 .ToArray();
             Dictionary<string, MemberInfo> memberDic = members.ToDictionary(x => x.Name, x => x);
 
-            SheetInfo sheetInfo = classSheet.sheet_info;
+            SheetInfo sheetInfo = classSheet.SheetInfo;
             int nameRowIndex = -1;
             foreach (KeyValuePair<ReservedCell.E_RESERVED, ReservedCell> x in classSheet.reserved_dic2)
             {

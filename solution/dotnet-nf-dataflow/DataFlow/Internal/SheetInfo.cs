@@ -15,8 +15,8 @@ namespace NF.Tools.DataFlow.Internal
         }
 
         public ISheet sheet { get; init; }
-        public string sheet_name { get; init; }
-        public string sheet_namespace { get; init; }
+        public string SheetName { get; init; }
+        public string SheetNamespace { get; init; }
         public E_TYPE type { get; init; }
         public int row_max { get; init; }
         public int column_max { get; init; }
@@ -24,8 +24,8 @@ namespace NF.Tools.DataFlow.Internal
         public SheetInfo(in ISheet sheet, in string refinedSheetName, in string sheetNamespace, in E_TYPE type, in int rowMax, in int columnMax)
         {
             this.sheet = sheet;
-            sheet_name = refinedSheetName;
-            sheet_namespace = sheetNamespace;
+            SheetName = refinedSheetName;
+            SheetNamespace = sheetNamespace;
             this.type = type;
             row_max = rowMax;
             column_max = columnMax;

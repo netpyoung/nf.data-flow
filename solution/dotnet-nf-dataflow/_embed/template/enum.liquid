@@ -1,14 +1,14 @@
 using System;
 using System.ComponentModel;
 
-namespace {{ data.sheet_info.sheet_namespace }}
+namespace {{ data.SheetInfo.SheetNamespace }}
 {
-    public enum {{ data.sheet_info.sheet_name }}
+    public enum {{ data.SheetInfo.SheetName }}
     {
-        {%- for content in data.contents -%}
-        {{ content.attr }}
-        [Description("{{ content.desc }}")]
-        {{ content.name }} = {{ content.value }},
+        {%- for content in data.Contents -%}
+        {{ content.Attr }}
+        [Description("{{ content.Desc }}")]
+        {{ content.Name }} = {{ content.Value }},
         {%- endfor -%}
     }
 }

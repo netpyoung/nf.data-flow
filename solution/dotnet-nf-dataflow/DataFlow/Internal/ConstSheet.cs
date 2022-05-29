@@ -8,25 +8,25 @@ namespace NF.Tools.DataFlow.Internal
     {
         public class ContentCell_Const : Drop
         {
-            public E_PART part { get; init; }
-            public string attr { get; init; }
-            public string type { get; init; }
-            public string name { get; init; }
-            public string value { get; init; }
-            public string desc { get; init; }
+            public E_PART Part { get; init; }
+            public string Attr { get; init; }
+            public string Type { get; init; }
+            public string Name { get; init; }
+            public string Value { get; init; }
+            public string Desc { get; init; }
 
             public ContentCell_Const(in E_PART Part, in string Attr, in string Type, in string Name, in string Value, in string Desc)
             {
-                this.part = Part;
-                this.attr = Attr;
-                this.type = Type;
-                this.name = Name;
-                this.value = Value;
-                this.desc = Desc;
+                this.Part = Part;
+                this.Attr = Attr;
+                this.Type = Type;
+                this.Name = Name;
+                this.Value = Value;
+                this.Desc = Desc;
             }
         }
-        public SheetInfo sheet_info { get; init; }
-        public ContentCell_Const[] contents { get; init; }
+        public SheetInfo SheetInfo { get; init; }
+        public ContentCell_Const[] Contents { get; init; }
         public Dictionary<ReservedCell.E_RESERVED, ReservedCell> reserved_dic { get; init; }
 
         // ==============================================================
@@ -272,8 +272,8 @@ namespace NF.Tools.DataFlow.Internal
 
             ConstSheet ret = new ConstSheet
             {
-                sheet_info = sheetInfo,
-                contents = cs,
+                SheetInfo = sheetInfo,
+                Contents = cs,
                 reserved_dic = reservedDic,
             };
             return ret;

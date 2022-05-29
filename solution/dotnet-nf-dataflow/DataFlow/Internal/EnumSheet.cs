@@ -9,20 +9,20 @@ namespace NF.Tools.DataFlow.Internal
     {
         public class ContentCell_Enum : Drop
         {
-            public string attr { get; init; }
-            public string name { get; init; }
-            public string value { get; init; }
-            public string desc { get; init; }
+            public string Attr { get; init; }
+            public string Name { get; init; }
+            public string Value { get; init; }
+            public string Desc { get; init; }
             public ContentCell_Enum(in string Attr, in string Name, in string Value, in string Desc)
             {
-                this.attr = Attr;
-                this.name = Name;
-                this.value = Value;
-                this.desc = Desc;
+                this.Attr = Attr;
+                this.Name = Name;
+                this.Value = Value;
+                this.Desc = Desc;
             }
         }
-        public SheetInfo sheet_info { get; init; }
-        public ContentCell_Enum[] contents { get; init; }
+        public SheetInfo SheetInfo { get; init; }
+        public ContentCell_Enum[] Contents { get; init; }
         public Dictionary<ReservedCell.E_RESERVED, ReservedCell> reserved_dic { get; init; }
 
         // ==============================================================
@@ -184,8 +184,8 @@ namespace NF.Tools.DataFlow.Internal
 
             EnumSheet ret = new EnumSheet
             {
-                sheet_info = sheetInfo,
-                contents = cs,
+                SheetInfo = sheetInfo,
+                Contents = cs,
                 reserved_dic = reservedDic,
             };
             return ret;
