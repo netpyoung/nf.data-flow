@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "dotnet-nf-dataflow": {
+      "commandName": "Project",
+      "workingDirectory": "$(SolutionDir)../"
+    }
+  }
+}
