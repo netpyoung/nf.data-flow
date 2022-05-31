@@ -1,5 +1,6 @@
 # input_paths    :
 #  - input
+# pre_assemble   : true
 # output_code_dir: output
 # output_db_path : output.db
 # password       : helloworld

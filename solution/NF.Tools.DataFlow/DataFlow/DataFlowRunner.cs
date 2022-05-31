@@ -36,7 +36,9 @@ namespace NF.Tools.DataFlow
 
         public static int Run(in DataFlowRunnerOption opt)
         {
-            if (string.IsNullOrEmpty(opt.output_code_dir) && string.IsNullOrEmpty(opt.output_db_path))
+            bool shouldGenerateCode = !string.IsNullOrEmpty(opt.output_code_dir);
+            bool shouldGenerateDb = !string.IsNullOrEmpty(opt.output_db_path);
+            if (!shouldGenerateCode && !shouldGenerateDb)
             {
                 return 1;
             }
@@ -51,14 +53,21 @@ namespace NF.Tools.DataFlow
                 return 1;
             }
 
-            if (!string.IsNullOrEmpty(opt.output_code_dir))
+            bool isNeedGenerateAssembly = opt.pre_assemble || shouldGenerateDb;
+            Assembly assembly = null;
+            if (isNeedGenerateAssembly)
+            {
+                assembly = GetAA(rrs);
+            }
+
+            if (shouldGenerateCode)
             {
                 GenerateCode(rrs, opt.output_code_dir);
             }
 
-            if (!string.IsNullOrEmpty(opt.output_db_path))
+            if (shouldGenerateDb)
             {
-                E_GENERATE_DB_RESULT dbResult = GenerateDb(workbookInfos, rrs, opt.password, opt.output_db_path);
+                E_GENERATE_DB_RESULT dbResult = GenerateDb(assembly, workbookInfos, opt.password, opt.output_db_path);
                 if (dbResult != E_GENERATE_DB_RESULT.OK)
                 {
                     return 1;
@@ -80,7 +89,7 @@ namespace NF.Tools.DataFlow
             }
         }
 
-        private static E_GENERATE_DB_RESULT GenerateDb(in WorkbookInfo[] workbookInfos, in RenderResult[] rrs, in string dbPassword, in string dbPath)
+        private static Assembly GetAA(in RenderResult[] rrs)
         {
             List<SyntaxTree> trees = new List<SyntaxTree>(rrs.Length + 1);
             foreach (ref readonly DataFlowRunner.RenderResult r in rrs.AsSpan())
@@ -109,21 +118,23 @@ namespace NF.Tools.DataFlow
                 referenceArray,
                 new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
 
-            Assembly asm = null;
             using (MemoryStream peStream = new MemoryStream())
             using (MemoryStream pdbStream = new MemoryStream())
             {
                 EmitResult emitResult = compilation.Emit(peStream, pdbStream);
                 if (!emitResult.Success)
                 {
-                    return E_GENERATE_DB_RESULT.FAIL_COMPILE;
+                    return null;
                 }
                 peStream.Seek(0, SeekOrigin.Begin);
                 pdbStream.Seek(0, SeekOrigin.Begin);
-                asm = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromStream(peStream, pdbStream);
+                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromStream(peStream, pdbStream);
             }
+        }
 
-            Type[] assemplyTypoes = asm.GetTypes();
+        private static E_GENERATE_DB_RESULT GenerateDb(in Assembly assembly, in WorkbookInfo[] workbookInfos, in string dbPassword, in string dbPath)
+        {
+            Type[] assemplyTypoes = assembly.GetTypes();
             List<Type> types = new List<Type>(assemplyTypoes.Length);
             foreach (Type type in assemplyTypoes)
             {

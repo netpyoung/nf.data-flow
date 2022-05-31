@@ -9,6 +9,9 @@ namespace NF.Tools.DataFlow
         [Option('i', "input_paths", Default = new string[] { "input" })]
         public IEnumerable<string> input_paths { get; set; }
 
+        [Option('a', "pre_assemble", Default = true)]
+        public bool pre_assemble { get; set; }
+
         [Option('o', "output_code_dir", Default = "output", HelpText = "output directory")]
         public string output_code_dir { get; set; }
 
@@ -43,6 +46,9 @@ namespace NF.Tools.DataFlow
             {
                 this.input_paths = o.input_paths;
             }
+            
+            this.pre_assemble = o.pre_assemble;
+
             if (this.output_code_dir == null)
             {
                 this.output_code_dir = o.output_code_dir;
