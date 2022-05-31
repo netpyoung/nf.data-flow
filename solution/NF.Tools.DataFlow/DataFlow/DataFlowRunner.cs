@@ -43,7 +43,8 @@ namespace NF.Tools.DataFlow
                 return 1;
             }
 
-            if (!TryGetWorkbookInfos(opt, out WorkbookInfo[] workbookInfos))
+            WorkbookInfo[] workbookInfos = GetWorkbookInfosOrNull(opt);
+            if (workbookInfos == null)
             {
                 return 1;
             }
@@ -57,7 +58,11 @@ namespace NF.Tools.DataFlow
             Assembly assembly = null;
             if (isNeedGenerateAssembly)
             {
-                assembly = GetAA(rrs);
+                assembly = GetAssemblyOrNull(rrs);
+                if (assembly == null)
+                {
+                    return 1;
+                }
             }
 
             if (shouldGenerateCode)
@@ -89,7 +94,7 @@ namespace NF.Tools.DataFlow
             }
         }
 
-        private static Assembly GetAA(in RenderResult[] rrs)
+        private static Assembly GetAssemblyOrNull(in RenderResult[] rrs)
         {
             List<SyntaxTree> trees = new List<SyntaxTree>(rrs.Length + 1);
             foreach (ref readonly DataFlowRunner.RenderResult r in rrs.AsSpan())
@@ -247,13 +252,12 @@ namespace NF.Tools.DataFlow
             return rrs.ToArray();
         }
 
-        internal static bool TryGetWorkbookInfos(in DataFlowRunnerOption opt, out WorkbookInfo[] outWorkbookInfos)
+        internal static WorkbookInfo[] GetWorkbookInfosOrNull(in DataFlowRunnerOption opt)
         {
             List<string> excelPaths = GetExcelFpaths(opt.input_paths);
             if (excelPaths.Count == 0)
             {
-                outWorkbookInfos = default;
-                return false;
+                return null;
             }
 
             List<WorkbookInfo> infos = new List<WorkbookInfo>(excelPaths.Count);
@@ -271,8 +275,7 @@ namespace NF.Tools.DataFlow
                     infos.Add(workbookInfo);
                 }
             }
-            outWorkbookInfos = infos.ToArray();
-            return true;
+            return infos.ToArray();
         }
 
         private static List<string> GetExcelFpaths(in IEnumerable<string> inputExcelPaths)
