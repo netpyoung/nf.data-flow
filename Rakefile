@@ -2,7 +2,7 @@ require 'fileutils'
 
 ROOT = Dir.pwd
 
-INPUT_EXCEL_DIR   = "#{ROOT}/exels"
+INPUT_EXCEL_DIR   = "#{ROOT}/excels"
 OUTPUT_CODE_DIR   = "#{ROOT}/dataflow_unity/Assets/output"
 OUTPUT_DB_PATH    = "#{ROOT}/dataflow_unity/Assets/output/output.db"
 PASSWORD          = "helloworld"

@@ -2,6 +2,7 @@
   "profiles": {
     "dotnet-nf-dataflow": {
       "commandName": "Project",
+      "commandLineArgs": "--input_paths excels --output_code_dir output --output_db_path output/output.db",
       "workingDirectory": "$(SolutionDir)../"
     }
   }
