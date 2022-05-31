@@ -29,11 +29,11 @@ namespace NF.Tools.DataFlow
             {
                 return null;
             }
-            ref readonly WorkbookInfo _info = ref wf.Item1;
-            IWorkbook excel = _info.Excel;
-            IFormulaEvaluator _evaluator = excel.GetCreationHelper().CreateFormulaEvaluator();
+            ref readonly WorkbookInfo info = ref wf.Item1;
+            IWorkbook excel = info.Excel;
+            IFormulaEvaluator evaluator = excel.GetCreationHelper().CreateFormulaEvaluator();
 
-            ClassSheet classSheet = _info.ClassSheets.FirstOrDefault(x => x.SheetInfo.SheetName == sheetName);
+            ClassSheet classSheet = info.ClassSheets.FirstOrDefault(x => x.SheetInfo.SheetName == sheetName);
             if (classSheet == null)
             {
                 return null;
@@ -79,11 +79,8 @@ namespace NF.Tools.DataFlow
                 IRow row = sheetInfo.sheet.GetRow(y);
 
                 object item = Activator.CreateInstance(type);
-                foreach (KeyValuePair<string, int> kb in field_indexed_dic)
+                foreach ((string cachedFieldName, int cachedColumnIdx) in field_indexed_dic)
                 {
-                    string cachedFieldName = kb.Key;
-                    int cachedColumnIdx = kb.Value;
-
                     ICell cell = row.GetCell(cachedColumnIdx);
                     MemberInfo member = memberDic[cachedFieldName];
 
@@ -96,35 +93,28 @@ namespace NF.Tools.DataFlow
                     {
                         case MemberTypes.Field:
                             {
-                                object value = this.GetValue(cell, ((FieldInfo)member).FieldType, _evaluator);
+                                object value = this.GetValue(cell, ((FieldInfo)member).FieldType, evaluator);
                                 if (value == null)
                                 {
                                     continue;
                                 }
-
-                            ((FieldInfo)member).SetValue(item, value);
+                                ((FieldInfo)member).SetValue(item, value);
                             }
-
                             break;
-
                         case MemberTypes.Property:
                             {
-                                object value = this.GetValue(cell, ((PropertyInfo)member).PropertyType, _evaluator);
+                                object value = this.GetValue(cell, ((PropertyInfo)member).PropertyType, evaluator);
                                 if (value == null)
                                 {
                                     continue;
                                 }
-
-                            ((PropertyInfo)member).SetValue(item, value, null);
+                                ((PropertyInfo)member).SetValue(item, value, null);
                             }
-
                             break;
                     }
                 }
-
                 ret.Add(item);
             }
-
             return ret;
         }
         #region dirty methods

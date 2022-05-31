@@ -21,7 +21,7 @@ namespace NF.Tools.DataFlow
 {
     public class DataFlowRunner
     {
-        public record struct RenderResult
+        public readonly struct RenderResult
         {
             public string RenderedText { get; init; }
             public string OutputFpath { get; init; }
@@ -33,6 +33,19 @@ namespace NF.Tools.DataFlow
             FAIL_COMPILE,
             FAIL_DB_OPEARTE,
         }
+
+        public readonly struct TemplatePaths
+        {
+            public string LiquidConst { get; init; }
+            public string LiquidEnum { get; init; }
+            public string LiquidClass { get; init; }
+            public string IncludeCsharp { get; init; }
+        }
+
+        const string LIQUID_CONST = "const.liquid";
+        const string LIQUID_ENUM = "enum.liquid";
+        const string LIQUID_CLASS = "class.liquid";
+        const string INCLUDE_CSHARP = "Include.cs";
 
         public static int Run(in DataFlowRunnerOption opt)
         {
@@ -48,7 +61,10 @@ namespace NF.Tools.DataFlow
             {
                 return 1;
             }
-            RenderResult[] rrs = GetRenderResultsOrNull(workbookInfos, opt);
+
+            TemplatePaths templatePaths = GetTemplatePaths(opt.template_paths);
+
+            RenderResult[] rrs = GetRenderResultsOrNull(workbookInfos, templatePaths, opt.output_code_dir);
             if (rrs == null)
             {
                 return 1;
@@ -58,7 +74,24 @@ namespace NF.Tools.DataFlow
             Assembly assembly = null;
             if (isNeedGenerateAssembly)
             {
-                assembly = GetAssemblyOrNull(rrs);
+                string includeCsharpStr = null;
+                if (!string.IsNullOrEmpty(templatePaths.IncludeCsharp))
+                {
+                    if (!File.Exists(templatePaths.IncludeCsharp))
+                    {
+                        return 1;
+                    }
+                    includeCsharpStr = File.ReadAllText(templatePaths.IncludeCsharp);
+                }
+                if (includeCsharpStr == null)
+                {
+                    using (Stream stream = typeof(DataFlowRunner).Assembly.GetManifestResourceStream(INCLUDE_CSHARP))
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        includeCsharpStr = reader.ReadToEnd();
+                    }
+                }
+                assembly = GetAssemblyOrNull(rrs, includeCsharpStr);
                 if (assembly == null)
                 {
                     return 1;
@@ -94,7 +127,7 @@ namespace NF.Tools.DataFlow
             }
         }
 
-        private static Assembly GetAssemblyOrNull(in RenderResult[] rrs)
+        private static Assembly GetAssemblyOrNull(in RenderResult[] rrs, in string includeCsharpStr)
         {
             List<SyntaxTree> trees = new List<SyntaxTree>(rrs.Length + 1);
             foreach (ref readonly DataFlowRunner.RenderResult r in rrs.AsSpan())
@@ -102,14 +135,7 @@ namespace NF.Tools.DataFlow
                 SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(r.RenderedText);
                 trees.Add(syntaxTree);
             }
-            // TODO(pyoung): SQLite.Attributes.txt 말고 다른것들도 처리했으면 좋겠는데..
-            using (Stream stream = typeof(DataFlowRunner).Assembly.GetManifestResourceStream("SQLite.Attributes.txt"))
-            using (StreamReader reader = new StreamReader(stream))
-            {
-                string content = reader.ReadToEnd();
-                SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(content);
-                trees.Add(syntaxTree);
-            }
+            trees.Add(CSharpSyntaxTree.ParseText(includeCsharpStr));
             MetadataReference[] referenceArray = new MetadataReference[]
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
@@ -183,15 +209,15 @@ namespace NF.Tools.DataFlow
             return E_GENERATE_DB_RESULT.OK;
         }
 
-        internal static RenderResult[] GetRenderResultsOrNull(in WorkbookInfo[] workbookInfos, in DataFlowRunnerOption opt)
+        internal static RenderResult[] GetRenderResultsOrNull(in WorkbookInfo[] workbookInfos, in TemplatePaths templatePaths, in string output_code_dir)
         {
             int sum = workbookInfos.Select(x => x.ClassSheets.Length + x.ConstSheets.Length + x.EnumSheets.Length).Sum();
             List<RenderResult> rrs = new List<RenderResult>(sum);
 
             // preload templates
-            string templateStrConst = LoadTemplateOrNull(opt.template_dir, opt.template_const, "const.liquid");
-            string templateStrEnum = LoadTemplateOrNull(opt.template_dir, opt.template_enum, "enum.liquid");
-            string templateStrClass = LoadTemplateOrNull(opt.template_dir, opt.template_class, "class.liquid");
+            string templateStrConst = LoadTemplateOrNull(templatePaths.LiquidConst, LIQUID_CONST);
+            string templateStrEnum = LoadTemplateOrNull(templatePaths.LiquidEnum, LIQUID_ENUM);
+            string templateStrClass = LoadTemplateOrNull(templatePaths.LiquidClass, LIQUID_CLASS);
             Template.NamingConvention = new CSharpNamingConvention();
             Template templateConst = Template.Parse(templateStrConst);
             Template templateEnum = Template.Parse(templateStrEnum);
@@ -211,7 +237,7 @@ namespace NF.Tools.DataFlow
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{opt.output_code_dir}/{n}.cs";
+                    string outputPathClass = $"{output_code_dir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateClass.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
@@ -227,7 +253,7 @@ namespace NF.Tools.DataFlow
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{opt.output_code_dir}/{n}.cs";
+                    string outputPathClass = $"{output_code_dir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateConst.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
@@ -243,7 +269,7 @@ namespace NF.Tools.DataFlow
                             n = cell.CellString;
                         }
                     }
-                    string outputPathClass = $"{opt.output_code_dir}/{n}.cs";
+                    string outputPathClass = $"{output_code_dir}/{n}.cs";
                     Hash o = Hash.FromAnonymousObject(new { date, data });
                     string rendered = templateEnum.Render(o);
                     rrs.Add(new RenderResult { OutputFpath = outputPathClass, RenderedText = rendered });
@@ -311,21 +337,107 @@ namespace NF.Tools.DataFlow
             return ret;
         }
 
-        private static string LoadTemplateOrNull(in string templateDir, in string templateFPath, in string innerPath)
+        private static TemplatePaths GetTemplatePaths(in IEnumerable<string> inputTemplatePaths)
         {
-            if (File.Exists(templateFPath))
+            string liquidConst = null;
+            string liquidEnum = null;
+            string liquidClass = null;
+            string includeCsharp = null;
+
+            foreach (string path in inputTemplatePaths)
             {
-                return File.ReadAllText(templateFPath);
+                FileAttributes attr = File.GetAttributes(path);
+                if (attr.HasFlag(FileAttributes.Directory))
+                {
+                    string[] pathsInDir = Directory.GetFiles(path, "*.liquid", SearchOption.TopDirectoryOnly);
+                    foreach (string pathIndir in pathsInDir)
+                    {
+                        string filename = Path.GetFileName(pathIndir);
+                        switch (filename)
+                        {
+
+                            case LIQUID_CONST:
+                                if (liquidConst == null)
+                                {
+                                    liquidConst = pathIndir;
+                                }
+                                break;
+                            case LIQUID_ENUM:
+                                if (liquidEnum == null)
+                                {
+                                    liquidEnum = pathIndir;
+                                }
+                                break;
+                            case LIQUID_CLASS:
+                                if (liquidClass == null)
+                                {
+                                    liquidClass = pathIndir;
+                                }
+                                break;
+                            case INCLUDE_CSHARP:
+                                if (includeCsharp == null)
+                                {
+                                    includeCsharp = pathIndir;
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                else
+                {
+                    string filename = Path.GetFileName(path);
+                    switch (filename)
+                    {
+                        case LIQUID_CONST:
+                            if (liquidConst == null)
+                            {
+                                liquidConst = path;
+                            }
+                            break;
+                        case LIQUID_ENUM:
+                            if (liquidEnum == null)
+                            {
+                                liquidEnum = path;
+                            }
+                            break;
+                        case LIQUID_CLASS:
+                            if (liquidClass == null)
+                            {
+                                liquidClass = path;
+                            }
+                            break;
+                        case INCLUDE_CSHARP:
+                            if (includeCsharp == null)
+                            {
+                                includeCsharp = path;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
 
-            if (!string.IsNullOrEmpty(templateDir))
+            return new TemplatePaths
             {
-                string path = Path.Combine(templateDir, innerPath);
-                if (!File.Exists(path))
+                LiquidClass = liquidConst,
+                LiquidEnum = liquidEnum,
+                LiquidConst = liquidConst,
+                IncludeCsharp = includeCsharp,
+            };
+        }
+
+        private static string LoadTemplateOrNull(in string templatePath, in string innerPath)
+        {
+            if (!string.IsNullOrEmpty(templatePath))
+            {
+                if (!File.Exists(templatePath))
                 {
                     return null;
                 }
-                return File.ReadAllText(path);
+                return File.ReadAllText(templatePath);
             }
 
             using (Stream stream = typeof(DataFlowRunner).Assembly.GetManifestResourceStream(innerPath))

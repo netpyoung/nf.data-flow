@@ -20,19 +20,22 @@
 		<None Include="_native/sqlcipher.dll" CopyToOutputDirectory="Always" TargetPath="sqlcipher.dll" />
 		<None Include="_native/libcrypto-1_1-x64.dll" CopyToOutputDirectory="Always" TargetPath="libcrypto-1_1-x64.dll" />
 	</ItemGroup>
-
 	<ItemGroup>
-		<EmbeddedResource Include="_embed/template/class.liquid">
-			<LogicalName>class.liquid</LogicalName>
-		</EmbeddedResource>
+		<Compile Remove="_embed/template/Include.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
 		<EmbeddedResource Include="_embed/template/const.liquid">
 			<LogicalName>const.liquid</LogicalName>
 		</EmbeddedResource>
 		<EmbeddedResource Include="_embed/template/enum.liquid">
 			<LogicalName>enum.liquid</LogicalName>
 		</EmbeddedResource>
-		<EmbeddedResource Include="_embed/SQLite.Attributes.txt">
-			<LogicalName>SQLite.Attributes.txt</LogicalName>
+		<EmbeddedResource Include="_embed/template/class.liquid">
+			<LogicalName>class.liquid</LogicalName>
+		</EmbeddedResource>
+		<EmbeddedResource Include="_embed/template/Include.cs">
+			<LogicalName>Include.cs</LogicalName>
 		</EmbeddedResource>
 	</ItemGroup>
 </Project>
