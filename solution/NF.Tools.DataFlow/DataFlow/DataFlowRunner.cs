@@ -304,7 +304,7 @@ namespace NF.Tools.DataFlow
             return infos.ToArray();
         }
 
-        private static List<string> GetExcelFpaths(in IEnumerable<string> inputExcelPaths)
+        public static List<string> GetExcelFpaths(in IEnumerable<string> inputExcelPaths)
         {
             int pathCounts = inputExcelPaths.Count();
             List<string> ret = new List<string>(pathCounts);
@@ -344,78 +344,81 @@ namespace NF.Tools.DataFlow
             string liquidClass = null;
             string includeCsharp = null;
 
-            foreach (string path in inputTemplatePaths)
+            if (inputTemplatePaths != null)
             {
-                FileAttributes attr = File.GetAttributes(path);
-                if (attr.HasFlag(FileAttributes.Directory))
+                foreach (string path in inputTemplatePaths)
                 {
-                    string[] pathsInDir = Directory.GetFiles(path, "*.liquid", SearchOption.TopDirectoryOnly);
-                    foreach (string pathIndir in pathsInDir)
+                    FileAttributes attr = File.GetAttributes(path);
+                    if (attr.HasFlag(FileAttributes.Directory))
                     {
-                        string filename = Path.GetFileName(pathIndir);
+                        string[] pathsInDir = Directory.GetFiles(path, "*.liquid", SearchOption.TopDirectoryOnly);
+                        foreach (string pathIndir in pathsInDir)
+                        {
+                            string filename = Path.GetFileName(pathIndir);
+                            switch (filename)
+                            {
+
+                                case LIQUID_CONST:
+                                    if (liquidConst == null)
+                                    {
+                                        liquidConst = pathIndir;
+                                    }
+                                    break;
+                                case LIQUID_ENUM:
+                                    if (liquidEnum == null)
+                                    {
+                                        liquidEnum = pathIndir;
+                                    }
+                                    break;
+                                case LIQUID_CLASS:
+                                    if (liquidClass == null)
+                                    {
+                                        liquidClass = pathIndir;
+                                    }
+                                    break;
+                                case INCLUDE_CSHARP:
+                                    if (includeCsharp == null)
+                                    {
+                                        includeCsharp = pathIndir;
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string filename = Path.GetFileName(path);
                         switch (filename)
                         {
-
                             case LIQUID_CONST:
                                 if (liquidConst == null)
                                 {
-                                    liquidConst = pathIndir;
+                                    liquidConst = path;
                                 }
                                 break;
                             case LIQUID_ENUM:
                                 if (liquidEnum == null)
                                 {
-                                    liquidEnum = pathIndir;
+                                    liquidEnum = path;
                                 }
                                 break;
                             case LIQUID_CLASS:
                                 if (liquidClass == null)
                                 {
-                                    liquidClass = pathIndir;
+                                    liquidClass = path;
                                 }
                                 break;
                             case INCLUDE_CSHARP:
                                 if (includeCsharp == null)
                                 {
-                                    includeCsharp = pathIndir;
+                                    includeCsharp = path;
                                 }
                                 break;
                             default:
                                 break;
                         }
-                    }
-                }
-                else
-                {
-                    string filename = Path.GetFileName(path);
-                    switch (filename)
-                    {
-                        case LIQUID_CONST:
-                            if (liquidConst == null)
-                            {
-                                liquidConst = path;
-                            }
-                            break;
-                        case LIQUID_ENUM:
-                            if (liquidEnum == null)
-                            {
-                                liquidEnum = path;
-                            }
-                            break;
-                        case LIQUID_CLASS:
-                            if (liquidClass == null)
-                            {
-                                liquidClass = path;
-                            }
-                            break;
-                        case INCLUDE_CSHARP:
-                            if (includeCsharp == null)
-                            {
-                                includeCsharp = path;
-                            }
-                            break;
-                        default:
-                            break;
                     }
                 }
             }

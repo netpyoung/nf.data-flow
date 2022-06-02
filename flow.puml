@@ -1,8 +1,7 @@
 @startuml flow
 
-user -> rake : rake dataflow
-activate rake
-rake -> nf.dataflow : dotnet nf-dataflow
+user -> nf.dataflow : dotnet nf-dataflow
+activate nf.dataflow
 nf.dataflow -> unity : .cs
 nf.dataflow -> unity : .db
 deactivate
