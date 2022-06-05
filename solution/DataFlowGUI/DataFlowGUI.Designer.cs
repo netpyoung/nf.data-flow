@@ -38,6 +38,7 @@ partial class DataFlowGUIForm
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.btn_browse_dst = new System.Windows.Forms.Button();
+            this.btn_reveal = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -59,6 +60,7 @@ partial class DataFlowGUIForm
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 4);
             this.tableLayoutPanel1.Controls.Add(this.btn_browse_dst, 3, 4);
+            this.tableLayoutPanel1.Controls.Add(this.btn_reveal, 4, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -112,8 +114,9 @@ partial class DataFlowGUIForm
             this.tableLayoutPanel1.SetColumnSpan(this.txt_dst, 2);
             this.txt_dst.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txt_dst.Location = new System.Drawing.Point(108, 519);
+            this.txt_dst.MinimumSize = new System.Drawing.Size(0, 55);
             this.txt_dst.Name = "txt_dst";
-            this.txt_dst.Size = new System.Drawing.Size(941, 31);
+            this.txt_dst.Size = new System.Drawing.Size(941, 55);
             this.txt_dst.TabIndex = 3;
             // 
             // progress_export
@@ -175,6 +178,18 @@ partial class DataFlowGUIForm
             this.btn_browse_dst.UseVisualStyleBackColor = true;
             this.btn_browse_dst.Click += new System.EventHandler(this.OnBtnBrowseDst_Click);
             // 
+            // btn_reveal
+            // 
+            this.btn_reveal.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_reveal.Enabled = false;
+            this.btn_reveal.Location = new System.Drawing.Point(1142, 519);
+            this.btn_reveal.Name = "btn_reveal";
+            this.btn_reveal.Size = new System.Drawing.Size(88, 54);
+            this.btn_reveal.TabIndex = 10;
+            this.btn_reveal.Text = "Reveal";
+            this.btn_reveal.UseVisualStyleBackColor = true;
+            this.btn_reveal.Click += new System.EventHandler(this.OnBtnReveal_Click);
+            // 
             // DataFlowGUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
@@ -203,4 +218,5 @@ partial class DataFlowGUIForm
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.Button btn_browse_dst;
+    private System.Windows.Forms.Button btn_reveal;
 }

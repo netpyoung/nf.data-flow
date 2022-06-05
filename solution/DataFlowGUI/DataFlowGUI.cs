@@ -1,5 +1,6 @@
 using NF.Tools.DataFlow;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using YamlDotNet.Serialization;
@@ -31,6 +32,10 @@ namespace DataFlowGUI
                         }
                     }
                     txt_dst.Text = _opt.output_db_path;
+                    if (File.Exists(_opt.output_db_path))
+                    {
+                        btn_reveal.Enabled = true;
+                    }
                 }
             }
         }
@@ -55,27 +60,27 @@ namespace DataFlowGUI
 
         private void OnListExcel_DragDrop(object sender, DragEventArgs e)
         {
-            bool xx = e.Data.GetDataPresent(DataFormats.FileDrop);
-            if (!xx)
+            bool isFileDrop = e.Data.GetDataPresent(DataFormats.FileDrop);
+            if (!isFileDrop)
             {
                 return;
             }
 
-            object dd = e.Data.GetData(DataFormats.FileDrop);
-            if (dd == null)
+            object dropData = e.Data.GetData(DataFormats.FileDrop);
+            if (dropData == null)
             {
                 return;
             }
 
-            string[] paths = dd as string[];
-            if (paths == null)
+            string[] dropPaths = dropData as string[];
+            if (dropPaths == null)
             {
                 return;
             }
 
-            foreach (string x in DataFlowRunner.GetExcelFpaths(paths))
+            foreach (string excelPath in DataFlowRunner.GetExcelFpaths(dropPaths))
             {
-                list_excel.Items.Add(x);
+                list_excel.Items.Add(excelPath);
             }
         }
 
@@ -99,18 +104,20 @@ namespace DataFlowGUI
 
         private void OnBtnBrowseSrc_Click(object sender, System.EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            using (OpenFileDialog dlg = new OpenFileDialog())
             {
-                openFileDialog.Multiselect = true;
-                openFileDialog.Filter = "excel files (*.xlsx)|*.xlsx";
-                openFileDialog.RestoreDirectory = true;
+                dlg.Multiselect = true;
+                dlg.Filter = "excel files (*.xlsx)|*.xlsx";
+                dlg.RestoreDirectory = true;
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                if (dlg.ShowDialog() != DialogResult.OK)
                 {
-                    foreach (string fileName in openFileDialog.FileNames)
-                    {
-                        list_excel.Items.Add(fileName);
-                    }
+                    return;
+                }
+
+                foreach (string fileName in dlg.FileNames)
+                {
+                    list_excel.Items.Add(fileName);
                 }
             }
         }
@@ -150,16 +157,32 @@ namespace DataFlowGUI
 
         private void OnBtnBrowseDst_Click(object sender, System.EventArgs e)
         {
-            using (SaveFileDialog openFileDialog = new SaveFileDialog())
+            using (SaveFileDialog dlg = new SaveFileDialog())
             {
-                openFileDialog.Filter = "db files (*.db)|*.db";
-                openFileDialog.RestoreDirectory = true;
+                dlg.Filter = "db files (*.db)|*.db";
+                dlg.RestoreDirectory = true;
 
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                if (dlg.ShowDialog() != DialogResult.OK)
                 {
-                    txt_dst.Text = openFileDialog.FileName;
+                    return;
                 }
+
+                txt_dst.Text = dlg.FileName;
             }
+        }
+
+        private void OnBtnReveal_Click(object sender, System.EventArgs e)
+        {
+            if (string.IsNullOrEmpty(_opt.output_db_path))
+            {
+                return;
+            }
+            if (!File.Exists(_opt.output_db_path))
+            {
+                return;
+            }
+            string dirName = Path.GetDirectoryName(_opt.output_db_path);
+            Process.Start("explorer.exe", dirName);
         }
     }
 }
