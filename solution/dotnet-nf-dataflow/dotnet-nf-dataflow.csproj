@@ -6,6 +6,7 @@
 		<PackAsTool>true</PackAsTool>
 		<ToolCommandName>dotnet-nf-dataflow</ToolCommandName>
 		<PackageOutputPath>./nupkg</PackageOutputPath>
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -72,6 +72,7 @@ namespace NF.Tools.DataFlow
 
             bool isNeedGenerateAssembly = opt.pre_assemble || shouldGenerateDb;
             Assembly assembly = null;
+            System.Runtime.Loader.AssemblyLoadContext context = null;
             if (isNeedGenerateAssembly)
             {
                 string includeCsharpStr = null;
@@ -91,7 +92,8 @@ namespace NF.Tools.DataFlow
                         includeCsharpStr = reader.ReadToEnd();
                     }
                 }
-                assembly = GetAssemblyOrNull(rrs, includeCsharpStr);
+                context = new System.Runtime.Loader.AssemblyLoadContext("temp", isCollectible: true);
+                assembly = GetAssemblyOrNull(rrs, includeCsharpStr, context);
                 if (assembly == null)
                 {
                     return 1;
@@ -111,6 +113,10 @@ namespace NF.Tools.DataFlow
                     return 1;
                 }
             }
+            if (context != null)
+            {
+                context.Unload();
+            }
             return 0;
         }
 
@@ -127,7 +133,7 @@ namespace NF.Tools.DataFlow
             }
         }
 
-        private static Assembly GetAssemblyOrNull(in RenderResult[] rrs, in string includeCsharpStr)
+        private static Assembly GetAssemblyOrNull(in RenderResult[] rrs, in string includeCsharpStr, in System.Runtime.Loader.AssemblyLoadContext context)
         {
             List<SyntaxTree> trees = new List<SyntaxTree>(rrs.Length + 1);
             foreach (ref readonly DataFlowRunner.RenderResult r in rrs.AsSpan())
@@ -159,7 +165,7 @@ namespace NF.Tools.DataFlow
                 }
                 peStream.Seek(0, SeekOrigin.Begin);
                 pdbStream.Seek(0, SeekOrigin.Begin);
-                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromStream(peStream, pdbStream);
+                return context.LoadFromStream(peStream, pdbStream);
             }
         }
 

@@ -33,7 +33,7 @@ partial class DataFlowGUIForm
             this.btn_browse_src = new System.Windows.Forms.Button();
             this.btn_go = new System.Windows.Forms.Button();
             this.txt_dst = new System.Windows.Forms.TextBox();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progress_export = new System.Windows.Forms.ProgressBar();
             this.list_excel = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -54,7 +54,7 @@ partial class DataFlowGUIForm
             this.tableLayoutPanel1.Controls.Add(this.btn_browse_src, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.btn_go, 3, 2);
             this.tableLayoutPanel1.Controls.Add(this.txt_dst, 1, 4);
-            this.tableLayoutPanel1.Controls.Add(this.progressBar1, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.progress_export, 0, 6);
             this.tableLayoutPanel1.Controls.Add(this.list_excel, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 4);
@@ -116,14 +116,14 @@ partial class DataFlowGUIForm
             this.txt_dst.Size = new System.Drawing.Size(941, 31);
             this.txt_dst.TabIndex = 3;
             // 
-            // progressBar1
+            // progress_export
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.progressBar1, 5);
-            this.progressBar1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.progressBar1.Location = new System.Drawing.Point(3, 661);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(1227, 15);
-            this.progressBar1.TabIndex = 4;
+            this.tableLayoutPanel1.SetColumnSpan(this.progress_export, 5);
+            this.progress_export.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.progress_export.Location = new System.Drawing.Point(3, 661);
+            this.progress_export.Name = "progress_export";
+            this.progress_export.Size = new System.Drawing.Size(1227, 15);
+            this.progress_export.TabIndex = 4;
             // 
             // list_excel
             // 
@@ -198,7 +198,7 @@ partial class DataFlowGUIForm
     private System.Windows.Forms.Button btn_browse_src;
     private System.Windows.Forms.Button btn_go;
     private System.Windows.Forms.TextBox txt_dst;
-    private System.Windows.Forms.ProgressBar progressBar1;
+    private System.Windows.Forms.ProgressBar progress_export;
     private System.Windows.Forms.ListBox list_excel;
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
