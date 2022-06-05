@@ -337,6 +337,10 @@ namespace NF.Tools.DataFlow
                 }
                 else
                 {
+                    if (Path.GetExtension(path) != ".xlsx")
+                    {
+                        continue;
+                    }
                     if (set.Add(path))
                     {
                         ret.Add(path);

@@ -123,6 +123,7 @@ partial class DataFlowGUIForm
             // 
             // txt_dst
             // 
+            this.txt_dst.AllowDrop = true;
             this.tableLayoutPanel1.SetColumnSpan(this.txt_dst, 2);
             this.txt_dst.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txt_dst.Location = new System.Drawing.Point(108, 412);
@@ -130,6 +131,8 @@ partial class DataFlowGUIForm
             this.txt_dst.Name = "txt_dst";
             this.txt_dst.Size = new System.Drawing.Size(941, 66);
             this.txt_dst.TabIndex = 3;
+            this.txt_dst.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnTxtDst_DragDrop);
+            this.txt_dst.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnTxtDst_DragEnter);
             // 
             // progress_export
             // 
@@ -155,7 +158,6 @@ partial class DataFlowGUIForm
             this.list_excel.TabIndex = 5;
             this.list_excel.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnListExcel_DragDrop);
             this.list_excel.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnListExcel_DragEnter);
-            this.list_excel.DragOver += new System.Windows.Forms.DragEventHandler(this.OnListExcel_DragOver);
             // 
             // label1
             // 
