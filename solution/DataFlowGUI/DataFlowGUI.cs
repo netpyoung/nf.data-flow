@@ -11,8 +11,10 @@ namespace DataFlowGUI
 {
     public partial class DataFlowGUIForm : Form
     {
-        DataFlowRunnerOption _opt = new DataFlowRunnerOption();
         const string DATAFLOW_YAML = "dataflow.yaml";
+
+        DataFlowRunnerOption _opt = new DataFlowRunnerOption();
+        HashSet<string> _srcItemSet = new HashSet<string>();
 
         public DataFlowGUIForm()
         {
@@ -34,13 +36,29 @@ namespace DataFlowGUI
                 {
                     if (_opt.input_paths != null)
                     {
-                        foreach (string inputPaths in _opt.input_paths)
+                        foreach (string inputPath in _opt.input_paths)
                         {
-                            list_excel.Items.Add(inputPaths);
+                            SrcItemAdd(inputPath);
                         }
                     }
                     txt_dst.Text = _opt.output_db_path;
                 }
+            }
+        }
+
+        private void SrcItemAdd(string path)
+        {
+            if (_srcItemSet.Add(path))
+            {
+                list_excel.Items.Add(path);
+            }
+        }
+
+        private void SrcItemDel(string path)
+        {
+            if (_srcItemSet.Remove(path))
+            {
+                list_excel.Items.Remove(path);
             }
         }
 
@@ -106,7 +124,7 @@ namespace DataFlowGUI
 
             foreach (string excelPath in DataFlowRunner.GetExcelFpaths(dropPaths))
             {
-                list_excel.Items.Add(excelPath);
+                SrcItemAdd(excelPath);
             }
         }
 
@@ -124,7 +142,7 @@ namespace DataFlowGUI
         {
             while (list_excel.SelectedItems.Count > 0)
             {
-                list_excel.Items.Remove(list_excel.SelectedItem);
+                SrcItemDel(list_excel.SelectedItem.ToString());
             }
         }
 
@@ -143,7 +161,7 @@ namespace DataFlowGUI
 
                 foreach (string fileName in dlg.FileNames)
                 {
-                    list_excel.Items.Add(fileName);
+                    SrcItemAdd(fileName);
                 }
             }
         }

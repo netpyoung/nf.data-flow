@@ -318,6 +318,11 @@ namespace NF.Tools.DataFlow
             HashSet<string> set = new HashSet<string>(pathCounts);
             foreach (string path in inputExcelPaths)
             {
+                if (!File.Exists(path))
+                {
+                    continue;
+                }
+
                 FileAttributes attr = File.GetAttributes(path);
                 if (attr.HasFlag(FileAttributes.Directory))
                 {
