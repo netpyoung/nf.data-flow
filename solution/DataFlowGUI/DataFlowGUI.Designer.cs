@@ -262,9 +262,9 @@ partial class DataFlowGUIForm
             // menu_exit
             // 
             this.menu_exit.Name = "menu_exit";
-            this.menu_exit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.menu_exit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
             this.menu_exit.Size = new System.Drawing.Size(330, 34);
-            this.menu_exit.Text = "E&xit";
+            this.menu_exit.Text = "&Quit";
             // 
             // helpToolStripMenuItem
             // 
