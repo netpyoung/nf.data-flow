@@ -15,6 +15,10 @@ namespace DataFlowGUI
         public DataFlowGUIForm()
         {
             InitializeComponent();
+            this.menu_browse_src.Click += new System.EventHandler(this.OnBtnBrowseSrc_Click);
+            this.menu_browse_dst.Click += new System.EventHandler(this.OnBtnBrowseDst_Click);
+            this.menu_go.Click += new System.EventHandler(this.OnBtnGo_Click);
+            this.menu_exit.Click += new System.EventHandler((o, s) => this.Close());
             if (File.Exists(DATAFLOW_YAML))
             {
                 string configYamlStr = File.ReadAllText(DATAFLOW_YAML);
@@ -183,6 +187,13 @@ namespace DataFlowGUI
             }
             string dirName = Path.GetDirectoryName(_opt.output_db_path);
             Process.Start("explorer.exe", dirName);
+        }
+
+        private void OnMenuInfo_Click(object sender, System.EventArgs e)
+        {
+            AboutForm f = new AboutForm();
+            f.StartPosition = FormStartPosition.CenterParent;
+            f.ShowDialog();
         }
     }
 }
