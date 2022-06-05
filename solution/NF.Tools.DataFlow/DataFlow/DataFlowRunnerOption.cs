@@ -27,7 +27,7 @@ namespace NF.Tools.DataFlow
         [Option('t', "template_paths", Default = null)]
         public IEnumerable<string> template_paths { get; set; }
 
-        [Option('c', "config", Default = ".dataflow.yaml", HelpText = "config file path")]
+        [Option('c', "config", Default = "dataflow.yaml", HelpText = "config file path")]
         public string config { get; set; }
 
         public void Merge(in DataFlowRunnerOption o)

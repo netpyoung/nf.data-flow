@@ -38,4 +38,8 @@
 			<LogicalName>Include.cs</LogicalName>
 		</EmbeddedResource>
 	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="../../dataflow.yaml" />
+	</ItemGroup>
 </Project>
