@@ -225,45 +225,45 @@ partial class DataFlowGUIForm
             this.toolStripSeparator2,
             this.menu_exit});
             this.menuItem.Name = "menuItem";
-            this.menuItem.Size = new System.Drawing.Size(75, 29);
+            this.menuItem.Size = new System.Drawing.Size(73, 29);
             this.menuItem.Text = "Menu";
             // 
             // menu_browse_src
             // 
             this.menu_browse_src.Name = "menu_browse_src";
             this.menu_browse_src.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
-            this.menu_browse_src.Size = new System.Drawing.Size(335, 34);
+            this.menu_browse_src.Size = new System.Drawing.Size(330, 34);
             this.menu_browse_src.Text = "&Browse Source";
             // 
             // menu_browse_dst
             // 
             this.menu_browse_dst.Name = "menu_browse_dst";
             this.menu_browse_dst.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
-            this.menu_browse_dst.Size = new System.Drawing.Size(335, 34);
+            this.menu_browse_dst.Size = new System.Drawing.Size(330, 34);
             this.menu_browse_dst.Text = "Browse &Destination";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(332, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(327, 6);
             // 
             // menu_go
             // 
             this.menu_go.Name = "menu_go";
             this.menu_go.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
-            this.menu_go.Size = new System.Drawing.Size(335, 34);
+            this.menu_go.Size = new System.Drawing.Size(330, 34);
             this.menu_go.Text = "&Go";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(332, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(327, 6);
             // 
             // menu_exit
             // 
             this.menu_exit.Name = "menu_exit";
             this.menu_exit.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.menu_exit.Size = new System.Drawing.Size(335, 34);
+            this.menu_exit.Size = new System.Drawing.Size(330, 34);
             this.menu_exit.Text = "E&xit";
             // 
             // helpToolStripMenuItem
