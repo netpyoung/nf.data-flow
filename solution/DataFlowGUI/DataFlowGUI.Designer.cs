@@ -39,6 +39,7 @@ partial class DataFlowGUIForm
             this.label2 = new System.Windows.Forms.Label();
             this.btn_browse_dst = new System.Windows.Forms.Button();
             this.btn_reveal = new System.Windows.Forms.Button();
+            this.btn_detail = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menu_browse_src = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,32 +68,35 @@ partial class DataFlowGUIForm
             this.tableLayoutPanel1.Controls.Add(this.btn_browse_src, 3, 0);
             this.tableLayoutPanel1.Controls.Add(this.btn_go, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.txt_dst, 1, 3);
-            this.tableLayoutPanel1.Controls.Add(this.progress_export, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.progress_export, 0, 7);
             this.tableLayoutPanel1.Controls.Add(this.list_excel, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.label2, 0, 3);
             this.tableLayoutPanel1.Controls.Add(this.btn_browse_dst, 3, 3);
             this.tableLayoutPanel1.Controls.Add(this.btn_reveal, 4, 3);
+            this.tableLayoutPanel1.Controls.Add(this.btn_detail, 4, 5);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 33);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 7;
+            this.tableLayoutPanel1.RowCount = 8;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 17.4026F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 82.5974F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 47F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 74F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 40F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 60F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 62F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1233, 646);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 45F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 37F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1201, 712);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // btn_remove
             // 
             this.btn_remove.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_remove.Location = new System.Drawing.Point(1142, 3);
+            this.btn_remove.Location = new System.Drawing.Point(1110, 3);
             this.btn_remove.Name = "btn_remove";
-            this.btn_remove.Size = new System.Drawing.Size(88, 57);
+            this.btn_remove.Size = new System.Drawing.Size(88, 65);
             this.btn_remove.TabIndex = 1;
             this.btn_remove.Text = "Remove";
             this.btn_remove.UseVisualStyleBackColor = true;
@@ -101,9 +105,9 @@ partial class DataFlowGUIForm
             // btn_browse_src
             // 
             this.btn_browse_src.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_browse_src.Location = new System.Drawing.Point(1055, 3);
+            this.btn_browse_src.Location = new System.Drawing.Point(1023, 3);
             this.btn_browse_src.Name = "btn_browse_src";
-            this.btn_browse_src.Size = new System.Drawing.Size(81, 57);
+            this.btn_browse_src.Size = new System.Drawing.Size(81, 65);
             this.btn_browse_src.TabIndex = 0;
             this.btn_browse_src.Text = "Browse";
             this.btn_browse_src.UseVisualStyleBackColor = true;
@@ -111,11 +115,11 @@ partial class DataFlowGUIForm
             // 
             // btn_go
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.btn_go, 5);
+            this.tableLayoutPanel1.SetColumnSpan(this.btn_go, 3);
             this.btn_go.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_go.Location = new System.Drawing.Point(3, 526);
+            this.btn_go.Location = new System.Drawing.Point(3, 572);
             this.btn_go.Name = "btn_go";
-            this.btn_go.Size = new System.Drawing.Size(1227, 54);
+            this.btn_go.Size = new System.Drawing.Size(1014, 54);
             this.btn_go.TabIndex = 2;
             this.btn_go.Text = "Go";
             this.btn_go.UseVisualStyleBackColor = true;
@@ -126,10 +130,10 @@ partial class DataFlowGUIForm
             this.txt_dst.AllowDrop = true;
             this.tableLayoutPanel1.SetColumnSpan(this.txt_dst, 2);
             this.txt_dst.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txt_dst.Location = new System.Drawing.Point(108, 412);
+            this.txt_dst.Location = new System.Drawing.Point(104, 458);
             this.txt_dst.MinimumSize = new System.Drawing.Size(0, 66);
             this.txt_dst.Name = "txt_dst";
-            this.txt_dst.Size = new System.Drawing.Size(941, 66);
+            this.txt_dst.Size = new System.Drawing.Size(913, 66);
             this.txt_dst.TabIndex = 3;
             this.txt_dst.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnTxtDst_DragDrop);
             this.txt_dst.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnTxtDst_DragEnter);
@@ -138,9 +142,9 @@ partial class DataFlowGUIForm
             // 
             this.tableLayoutPanel1.SetColumnSpan(this.progress_export, 5);
             this.progress_export.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.progress_export.Location = new System.Drawing.Point(3, 586);
+            this.progress_export.Location = new System.Drawing.Point(3, 677);
             this.progress_export.Name = "progress_export";
-            this.progress_export.Size = new System.Drawing.Size(1227, 57);
+            this.progress_export.Size = new System.Drawing.Size(1195, 32);
             this.progress_export.TabIndex = 4;
             // 
             // list_excel
@@ -150,11 +154,11 @@ partial class DataFlowGUIForm
             this.list_excel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.list_excel.FormattingEnabled = true;
             this.list_excel.ItemHeight = 25;
-            this.list_excel.Location = new System.Drawing.Point(108, 3);
+            this.list_excel.Location = new System.Drawing.Point(104, 3);
             this.list_excel.Name = "list_excel";
             this.tableLayoutPanel1.SetRowSpan(this.list_excel, 3);
             this.list_excel.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_excel.Size = new System.Drawing.Size(941, 403);
+            this.list_excel.Size = new System.Drawing.Size(913, 449);
             this.list_excel.TabIndex = 5;
             this.list_excel.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnListExcel_DragDrop);
             this.list_excel.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnListExcel_DragEnter);
@@ -165,7 +169,7 @@ partial class DataFlowGUIForm
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(99, 63);
+            this.label1.Size = new System.Drawing.Size(95, 71);
             this.label1.TabIndex = 6;
             this.label1.Text = "src";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -174,9 +178,9 @@ partial class DataFlowGUIForm
             // 
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label2.Location = new System.Drawing.Point(3, 409);
+            this.label2.Location = new System.Drawing.Point(3, 455);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(99, 74);
+            this.label2.Size = new System.Drawing.Size(95, 74);
             this.label2.TabIndex = 7;
             this.label2.Text = "dst";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -184,7 +188,7 @@ partial class DataFlowGUIForm
             // btn_browse_dst
             // 
             this.btn_browse_dst.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_browse_dst.Location = new System.Drawing.Point(1055, 412);
+            this.btn_browse_dst.Location = new System.Drawing.Point(1023, 458);
             this.btn_browse_dst.Name = "btn_browse_dst";
             this.btn_browse_dst.Size = new System.Drawing.Size(81, 68);
             this.btn_browse_dst.TabIndex = 8;
@@ -196,13 +200,24 @@ partial class DataFlowGUIForm
             // 
             this.btn_reveal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btn_reveal.Enabled = false;
-            this.btn_reveal.Location = new System.Drawing.Point(1142, 412);
+            this.btn_reveal.Location = new System.Drawing.Point(1110, 458);
             this.btn_reveal.Name = "btn_reveal";
             this.btn_reveal.Size = new System.Drawing.Size(88, 68);
             this.btn_reveal.TabIndex = 10;
             this.btn_reveal.Text = "Reveal";
             this.btn_reveal.UseVisualStyleBackColor = true;
             this.btn_reveal.Click += new System.EventHandler(this.OnBtnReveal_Click);
+            // 
+            // btn_detail
+            // 
+            this.btn_detail.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_detail.Location = new System.Drawing.Point(1110, 572);
+            this.btn_detail.Name = "btn_detail";
+            this.btn_detail.Size = new System.Drawing.Size(88, 54);
+            this.btn_detail.TabIndex = 11;
+            this.btn_detail.Text = "Detail";
+            this.btn_detail.UseVisualStyleBackColor = true;
+            this.btn_detail.Click += new System.EventHandler(this.OnBtnDetail_Click);
             // 
             // menuStrip1
             // 
@@ -213,7 +228,7 @@ partial class DataFlowGUIForm
             this.helpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1233, 33);
+            this.menuStrip1.Size = new System.Drawing.Size(1201, 33);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -288,7 +303,7 @@ partial class DataFlowGUIForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1233, 679);
+            this.ClientSize = new System.Drawing.Size(1201, 745);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -328,4 +343,5 @@ partial class DataFlowGUIForm
     private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
     private System.Windows.Forms.ToolStripMenuItem menu_info;
     private System.Windows.Forms.ToolStripMenuItem menu_browse_src;
+    private System.Windows.Forms.Button btn_detail;
 }
