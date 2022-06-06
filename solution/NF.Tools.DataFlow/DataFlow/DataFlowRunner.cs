@@ -318,17 +318,22 @@ namespace NF.Tools.DataFlow
             HashSet<string> set = new HashSet<string>(pathCounts);
             foreach (string path in inputExcelPaths)
             {
-                if (!File.Exists(path))
+                bool isFile = File.Exists(path);
+                bool isDirectory = Directory.Exists(path);
+                if (!isFile && !isDirectory)
                 {
                     continue;
                 }
 
-                FileAttributes attr = File.GetAttributes(path);
-                if (attr.HasFlag(FileAttributes.Directory))
+                if (isDirectory)
                 {
                     string[] pathsInDir = Directory.GetFiles(path, "*.xlsx");
                     foreach (string pathIndir in pathsInDir)
                     {
+                        if (Path.GetFileName(pathIndir).StartsWith("~"))
+                        {
+                            continue;
+                        }
                         if (set.Add(pathIndir))
                         {
                             ret.Add(pathIndir);
@@ -337,6 +342,10 @@ namespace NF.Tools.DataFlow
                 }
                 else
                 {
+                    if (Path.GetFileName(path).StartsWith("~"))
+                    {
+                        continue;
+                    }
                     if (Path.GetExtension(path) != ".xlsx")
                     {
                         continue;

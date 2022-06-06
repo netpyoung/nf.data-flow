@@ -296,6 +296,10 @@ namespace DataFlowGUI
             }
 
             string path = dropPaths[0];
+            if (Path.GetFileName(path).StartsWith("~"))
+            {
+                return null;
+            }
             if (Path.GetExtension(path) != ".db")
             {
                 return null;
