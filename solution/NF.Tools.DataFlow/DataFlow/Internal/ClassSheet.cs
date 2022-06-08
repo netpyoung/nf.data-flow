@@ -28,6 +28,7 @@ namespace NF.Tools.DataFlow.Internal
         public ContentCell_Class[] Contents { get; init; }
         public Dictionary<ReservedCell.E_RESERVED, ReservedCell> reserved_dic { get; init; }
         public Dictionary<ReservedCell.E_RESERVED, ReservedCell> reserved_dic2 { get; init; }
+        public int ContentsStartRowIndex { get; init; }
 
         // ==============================================================
         public static ClassSheet GetOrNull(in SheetInfo sheetInfo)
@@ -154,6 +155,12 @@ namespace NF.Tools.DataFlow.Internal
                 }
                 if (cellValue == nameof(ReservedCell.E_RESERVED.VALUE))
                 {
+                    reservedDic2.Add(ReservedCell.E_RESERVED.VALUE,
+                        new ReservedCell
+                        {
+                            Reserved = ReservedCell.E_RESERVED.VALUE,
+                            Position = new int2(0, y),
+                        });
                     contentsStartRowIndex = y;
                     break;
                 }
@@ -227,6 +234,7 @@ namespace NF.Tools.DataFlow.Internal
                 Contents = cs,
                 reserved_dic = reservedDic,
                 reserved_dic2 = reservedDic2,
+                ContentsStartRowIndex = contentsStartRowIndex,
             };
             return ret;
         }

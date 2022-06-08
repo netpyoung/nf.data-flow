@@ -73,8 +73,8 @@ namespace NF.Tools.DataFlow
                 }
             }
 
-            List<object> ret = new List<object>(sheetInfo.RowMax - nameRowIndex);
-            for (int y = nameRowIndex + 1; y < sheetInfo.RowMax; ++y)
+            List<object> ret = new List<object>(sheetInfo.RowMax - classSheet.ContentsStartRowIndex);
+            for (int y = classSheet.ContentsStartRowIndex; y < sheetInfo.RowMax; ++y)
             {
                 IRow row = sheetInfo.sheet.GetRow(y);
 
