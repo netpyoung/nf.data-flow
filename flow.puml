@@ -1,7 +1,10 @@
 @startuml flow
 
 user -> nf.dataflow : dotnet nf-dataflow
+
 activate nf.dataflow
+nf.dataflow -> nf.dataflow : .cs
+nf.dataflow -> nf.dataflow : assembly - roslyn
 nf.dataflow -> unity : .cs
 nf.dataflow -> unity : .db
 deactivate

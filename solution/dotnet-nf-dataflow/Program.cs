@@ -9,33 +9,26 @@ namespace NF.Tools.DataFlow
     {
         private static int Main(string[] args)
         {
-            //DataExporterOptions opt = new DataExporterOptions
-            //{
-            //    InputExcelDir = "C:/prj/nf.data-flow/exels",
-            //    OutputDatabasePath = "output.db",
-            //};
-            //return new DataExporter(opt).Export();
-
             ParserResult<DataFlowRunnerOption> parseResult = Parser.Default.ParseArguments<DataFlowRunnerOption>(args);
             int shellExitStatus = parseResult.MapResult(opt =>
             {
                 try
                 {
-                    if (File.Exists(opt.config))
+                    if (!File.Exists(opt.config))
                     {
-                        string configYamlStr = File.ReadAllText(opt.config);
-                        IDeserializer deserializer = new DeserializerBuilder().Build();
-                        DataFlowRunnerOption yaml = deserializer.Deserialize<DataFlowRunnerOption>(configYamlStr);
-                        if (yaml == null)
-                        {
-                            return DataFlowRunner.Run(opt);
-                        }
-                    
-                        yaml.Merge(opt);
-                        return DataFlowRunner.Run(yaml);
+                        return DataFlowRunner.Run(opt);
                     }
 
-                    return DataFlowRunner.Run(opt);
+                    string configYamlStr = File.ReadAllText(opt.config);
+                    IDeserializer deserializer = new DeserializerBuilder().Build();
+                    DataFlowRunnerOption yamlBasedOpt = deserializer.Deserialize<DataFlowRunnerOption>(configYamlStr);
+                    if (yamlBasedOpt == null)
+                    {
+                        return DataFlowRunner.Run(opt);
+                    }
+
+                    DataFlowRunnerOption mergedOpt = yamlBasedOpt.Merge(opt);
+                    return DataFlowRunner.Run(mergedOpt);
                 }
                 catch (Exception e)
                 {
@@ -45,7 +38,6 @@ namespace NF.Tools.DataFlow
             },
             err =>
             {
-                Console.WriteLine(err);
                 return 1;
             });
             return shellExitStatus;

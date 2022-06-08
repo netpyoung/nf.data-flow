@@ -119,7 +119,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(159, 37);
             this.label3.TabIndex = 2;
-            this.label3.Text = "output_code_dir";
+            this.label3.Text = "out_csharp";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btn_browse

@@ -58,8 +58,8 @@ partial class DataFlowGUIForm
             // 
             this.tableLayoutPanel1.BackColor = System.Drawing.Color.Gainsboro;
             this.tableLayoutPanel1.ColumnCount = 5;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 12.28288F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 87.71712F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15.30984F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 84.69016F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 197F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 87F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 93F));
@@ -130,10 +130,10 @@ partial class DataFlowGUIForm
             this.txt_dst.AllowDrop = true;
             this.tableLayoutPanel1.SetColumnSpan(this.txt_dst, 2);
             this.txt_dst.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txt_dst.Location = new System.Drawing.Point(104, 458);
+            this.txt_dst.Location = new System.Drawing.Point(129, 458);
             this.txt_dst.MinimumSize = new System.Drawing.Size(0, 66);
             this.txt_dst.Name = "txt_dst";
-            this.txt_dst.Size = new System.Drawing.Size(913, 66);
+            this.txt_dst.Size = new System.Drawing.Size(888, 66);
             this.txt_dst.TabIndex = 3;
             this.txt_dst.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnTxtDst_DragDrop);
             this.txt_dst.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnTxtDst_DragEnter);
@@ -154,11 +154,11 @@ partial class DataFlowGUIForm
             this.list_excel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.list_excel.FormattingEnabled = true;
             this.list_excel.ItemHeight = 25;
-            this.list_excel.Location = new System.Drawing.Point(104, 3);
+            this.list_excel.Location = new System.Drawing.Point(129, 3);
             this.list_excel.Name = "list_excel";
             this.tableLayoutPanel1.SetRowSpan(this.list_excel, 3);
             this.list_excel.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.list_excel.Size = new System.Drawing.Size(913, 449);
+            this.list_excel.Size = new System.Drawing.Size(888, 449);
             this.list_excel.TabIndex = 5;
             this.list_excel.DragDrop += new System.Windows.Forms.DragEventHandler(this.OnListExcel_DragDrop);
             this.list_excel.DragEnter += new System.Windows.Forms.DragEventHandler(this.OnListExcel_DragEnter);
@@ -169,9 +169,9 @@ partial class DataFlowGUIForm
             this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(95, 71);
+            this.label1.Size = new System.Drawing.Size(120, 71);
             this.label1.TabIndex = 6;
-            this.label1.Text = "src";
+            this.label1.Text = "in_paths";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label2
@@ -180,9 +180,9 @@ partial class DataFlowGUIForm
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.Location = new System.Drawing.Point(3, 455);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(95, 74);
+            this.label2.Size = new System.Drawing.Size(120, 74);
             this.label2.TabIndex = 7;
-            this.label2.Text = "dst";
+            this.label2.Text = "out_database";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btn_browse_dst

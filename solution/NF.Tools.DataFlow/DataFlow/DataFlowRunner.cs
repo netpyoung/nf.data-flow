@@ -49,8 +49,8 @@ namespace NF.Tools.DataFlow
 
         public static int Run(in DataFlowRunnerOption opt)
         {
-            bool shouldGenerateCode = !string.IsNullOrEmpty(opt.output_code_dir);
-            bool shouldGenerateDb = !string.IsNullOrEmpty(opt.output_db_path);
+            bool shouldGenerateCode = !string.IsNullOrEmpty(opt.out_csharp);
+            bool shouldGenerateDb = !string.IsNullOrEmpty(opt.out_database);
             if (!shouldGenerateCode && !shouldGenerateDb)
             {
                 return 1;
@@ -64,13 +64,13 @@ namespace NF.Tools.DataFlow
 
             TemplatePaths templatePaths = GetTemplatePaths(opt.template_paths);
 
-            RenderResult[] rrs = GetRenderResultsOrNull(workbookInfos, templatePaths, opt.output_code_dir);
+            RenderResult[] rrs = GetRenderResultsOrNull(workbookInfos, templatePaths, opt.out_csharp);
             if (rrs == null)
             {
                 return 1;
             }
 
-            bool isNeedGenerateAssembly = opt.pre_assemble || shouldGenerateDb;
+            bool isNeedGenerateAssembly = opt.assemblely || shouldGenerateDb;
             Assembly assembly = null;
             System.Runtime.Loader.AssemblyLoadContext context = null;
             if (isNeedGenerateAssembly)
@@ -102,12 +102,12 @@ namespace NF.Tools.DataFlow
 
             if (shouldGenerateCode)
             {
-                GenerateCode(rrs, opt.output_code_dir);
+                GenerateCode(rrs, opt.out_csharp);
             }
 
             if (shouldGenerateDb)
             {
-                E_GENERATE_DB_RESULT dbResult = GenerateDb(assembly, workbookInfos, opt.password, opt.output_db_path);
+                E_GENERATE_DB_RESULT dbResult = GenerateDb(assembly, workbookInfos, opt.password, opt.out_database);
                 if (dbResult != E_GENERATE_DB_RESULT.OK)
                 {
                     return 1;
@@ -286,7 +286,7 @@ namespace NF.Tools.DataFlow
 
         internal static WorkbookInfo[] GetWorkbookInfosOrNull(in DataFlowRunnerOption opt)
         {
-            List<string> excelPaths = GetExcelFpaths(opt.input_paths);
+            List<string> excelPaths = GetExcelFpaths(opt.in_paths);
             if (excelPaths.Count == 0)
             {
                 return null;

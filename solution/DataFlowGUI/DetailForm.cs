@@ -16,7 +16,7 @@ namespace DataFlowGUI
             Opt = opt;
             this.txt_namespace.Text = opt.@namespace;
             this.txt_password.Text = opt.password;
-            this.txt_output_code_dir.Text = opt.output_code_dir;
+            this.txt_output_code_dir.Text = opt.out_csharp;
 
             this.txt_namespace.TextChanged += OnNamespaceChanged;
             this.txt_password.TextChanged += OnPasswordChanged;
@@ -32,7 +32,7 @@ namespace DataFlowGUI
         private void OnOuputCodeDirChanged(object sender, EventArgs e)
         {
             TextBox tb = sender as TextBox;
-            Opt.output_code_dir = tb.Text;
+            Opt.out_csharp = tb.Text;
         }
 
         private void OnNamespaceChanged(object sender, EventArgs e)
