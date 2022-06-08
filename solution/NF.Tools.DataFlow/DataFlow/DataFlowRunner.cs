@@ -6,6 +6,7 @@ using Microsoft.CodeAnalysis.Emit;
 using NF.Tools.DataFlow.Internal;
 using NPOI.XSSF.UserModel;
 using SqlCipher4Unity3D;
+using SQLite.Attribute;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -146,6 +147,7 @@ namespace NF.Tools.DataFlow
             {
                 MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(DescriptionAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(PrimaryKeyAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll")),
             };
             SyntaxTree[] treeArr = trees.ToArray();
