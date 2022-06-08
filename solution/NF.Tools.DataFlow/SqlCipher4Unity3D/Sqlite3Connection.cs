@@ -23,7 +23,7 @@ using Sqlite3Statement = System.IntPtr;
 
 namespace SqlCipher4Unity3D
 {
-	using SQLite.Attribute;
+	using SQLite.Attributes;
 	/// <summary>
 	/// Represents an open connection to a SQLite database.
 	/// </summary>

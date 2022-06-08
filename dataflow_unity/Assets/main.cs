@@ -8,9 +8,9 @@ namespace Hello
 	{
 		void Start()
 		{
-			DataService ds = new DataService("Assets/output/output.db", "helloworld");
-			List<SampleCharacter> characters = ds.Gets<SampleCharacter>();
-			foreach (SampleCharacter c in characters)
+			DataService ds = new DataService("Assets/output/output.db", "");
+			List<DCharacter> characters = ds.Gets<DCharacter>();
+			foreach (DCharacter c in characters)
 			{
 				Debug.Log($"{c.id} | {c.character_id} | {c.level} | {c.name}");
 			}

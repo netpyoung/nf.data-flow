@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.Emit;
 using NF.Tools.DataFlow.Internal;
 using NPOI.XSSF.UserModel;
 using SqlCipher4Unity3D;
-using SQLite.Attribute;
+using SQLite.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
