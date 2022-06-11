@@ -11,15 +11,25 @@ namespace NF.Tools.DataFlow.Internal
             public E_PART Part { get; init; }
             public string Attr { get; init; }
             public string Type { get; init; }
+            public bool IsRawString { get; init; }
             public string Name { get; init; }
             public string Value { get; init; }
             public string Desc { get; init; }
 
-            public ContentCell_Const(in E_PART Part, in string Attr, in string Type, in string Name, in string Value, in string Desc)
+            public ContentCell_Const(in E_PART Part, in string Attr, in string originType, in string Name, in string Value, in string Desc)
             {
                 this.Part = Part;
                 this.Attr = Attr;
-                this.Type = Type;
+                if (originType == "\"string")
+                {
+                    this.Type = originType.Substring(1);
+                    this.IsRawString = true;
+                }
+                else
+                {
+                    this.Type = originType;
+                    this.IsRawString = false;
+                }
                 this.Name = Name;
                 this.Value = Value;
                 this.Desc = Desc;

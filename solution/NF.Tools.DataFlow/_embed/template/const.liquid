@@ -7,7 +7,7 @@ namespace {{ data.SheetInfo.SheetNamespace }}
         {%- for content in data.Contents -%}
         {{ content.Attr }}
         [Description("{{ content.Desc }}")]
-        {%- if content.Type == "string" -%}
+        {%- if content.Type == "string" and content.IsRawString != true -%}
         public const {{ content.Type }} {{ content.Name }} = "{{ content.Value }}";
         {%- else -%}
         public const {{ content.Type }} {{ content.Name }} = {{ content.Value }};
