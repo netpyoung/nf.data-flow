@@ -108,7 +108,7 @@ namespace NF.Tools.DataFlow
 
             if (shouldGenerateDb)
             {
-                E_GENERATE_DB_RESULT dbResult = GenerateDb(assembly, workbookInfos, opt.password, opt.out_database);
+                E_GENERATE_DB_RESULT dbResult = GenerateDb(assembly, workbookInfos, opt.password, opt.out_database, opt.datetime_as_ticks);
                 if (dbResult != E_GENERATE_DB_RESULT.OK)
                 {
                     return 1;
@@ -171,7 +171,7 @@ namespace NF.Tools.DataFlow
             }
         }
 
-        private static E_GENERATE_DB_RESULT GenerateDb(in Assembly assembly, in WorkbookInfo[] workbookInfos, in string dbPassword, in string dbPath)
+        private static E_GENERATE_DB_RESULT GenerateDb(in Assembly assembly, in WorkbookInfo[] workbookInfos, in string dbPassword, in string dbPath, in bool dbDateTimeAsTicks)
         {
             Type[] assemplyTypoes = assembly.GetTypes();
             List<Type> types = new List<Type>(assemplyTypoes.Length);
@@ -191,7 +191,7 @@ namespace NF.Tools.DataFlow
             try
             {
                 ExcelLoader loader = new ExcelLoader(workbookInfos);
-                using (SQLiteConnection conn = new SQLiteConnection(dbPath, dbPassword, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create))
+                using (SQLiteConnection conn = new SQLiteConnection(dbPath, dbPassword, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create, storeDateTimeAsTicks: dbDateTimeAsTicks))
                 {
                     for (int i = 0; i < types.Count; ++i)
                     {

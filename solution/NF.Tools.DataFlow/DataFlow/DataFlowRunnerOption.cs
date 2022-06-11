@@ -30,6 +30,9 @@ namespace NF.Tools.DataFlow
         [Option("assemblely", Default = true, HelpText = "try to generate Assembly even if does not generate database")]
         public bool assemblely { get; set; }
 
+        [Option("datetime_as_ticks", Default = true, HelpText = "save datetime as ticks on database")]
+        public bool datetime_as_ticks { get; set; }
+
         public DataFlowRunnerOption Clone()
         {
             return new DataFlowRunnerOption
@@ -42,6 +45,7 @@ namespace NF.Tools.DataFlow
                 @namespace = this.@namespace,
                 template_paths = this.template_paths,
                 assemblely = this.assemblely,
+                datetime_as_ticks = this.datetime_as_ticks,
             };
         }
 
@@ -74,6 +78,10 @@ namespace NF.Tools.DataFlow
             if (ret.template_paths == null)
             {
                 ret.template_paths = o.template_paths;
+            }
+            if (ret.datetime_as_ticks != o.datetime_as_ticks)
+            {
+                ret.datetime_as_ticks = o.datetime_as_ticks;
             }
 
             // NOTE(pyoung): pass - ConfigFpath 

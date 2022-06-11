@@ -13,7 +13,7 @@ namespace Hello
             //const string DateTimeSqliteDefaultFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff";
             //SQLiteConnectionString conStr = new SQLiteConnectionString(dbFpath, storeDateTimeAsTicks: false, key: password, openFlags: SQLiteOpenFlags.ReadOnly, dateTimeStringFormat: DateTimeSqliteDefaultFormat);
             //this._connection = new SQLiteConnection(conStr);
-            this._connection = new SQLiteConnection(dbFpath, password, storeDateTimeAsTicks: false);
+            this._connection = new SQLiteConnection(dbFpath, password, storeDateTimeAsTicks: true);
         }
 
         public List<T> Gets<T>() where T : new()

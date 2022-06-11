@@ -17,6 +17,7 @@ namespace DataFlowGUI
             this.txt_namespace.Text = opt.@namespace;
             this.txt_password.Text = opt.password;
             this.txt_output_code_dir.Text = opt.out_csharp;
+            this.check_datetime_as_ticks.Checked =  Opt.datetime_as_ticks;
 
             this.txt_namespace.TextChanged += OnNamespaceChanged;
             this.txt_password.TextChanged += OnPasswordChanged;
@@ -101,5 +102,10 @@ namespace DataFlowGUI
             return path;
         }
 
+        private void OnCheck_datetime_as_ticks_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox cb = sender as CheckBox;
+            Opt.datetime_as_ticks = cb.Checked;
+        }
     }
 }
