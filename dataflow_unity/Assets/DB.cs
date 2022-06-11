@@ -10,7 +10,10 @@ namespace Hello
 
         public DataService(string dbFpath, string password = "")
         {
-            this._connection = new SQLiteConnection(dbFpath, password);
+            //const string DateTimeSqliteDefaultFormat = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fff";
+            //SQLiteConnectionString conStr = new SQLiteConnectionString(dbFpath, storeDateTimeAsTicks: false, key: password, openFlags: SQLiteOpenFlags.ReadOnly, dateTimeStringFormat: DateTimeSqliteDefaultFormat);
+            //this._connection = new SQLiteConnection(conStr);
+            this._connection = new SQLiteConnection(dbFpath, password, storeDateTimeAsTicks: false);
         }
 
         public List<T> Gets<T>() where T : new()

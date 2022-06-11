@@ -206,6 +206,21 @@ namespace NF.Tools.DataFlow
                 return Convert.ToBoolean(this.GetStringVal(cell, evaluator));
             }
 
+            if (type == typeof(DateTime))
+            {
+                return DateTime.Parse(this.GetStringVal(cell, evaluator));
+            }
+
+            if (type == typeof(DateTimeOffset))
+            {
+                return DateTimeOffset.Parse(this.GetStringVal(cell, evaluator));
+            }
+
+            if (type == typeof(TimeSpan))
+            {
+                return TimeSpan.Parse(this.GetStringVal(cell, evaluator));
+            }
+
             if (type.IsEnum)
             {
                 //return 5;

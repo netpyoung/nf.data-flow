@@ -254,7 +254,6 @@ namespace DataFlowGUI
         void StoreOption()
         {
             _opt.in_paths = GetInputPathsOrNull(list_excel);
-            _opt.@namespace = null;
             _opt.out_database = txt_dst.Text;
         }
 
