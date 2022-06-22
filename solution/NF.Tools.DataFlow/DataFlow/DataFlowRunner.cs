@@ -14,6 +14,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
+using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -134,6 +136,29 @@ namespace NF.Tools.DataFlow
             }
         }
 
+        private static MetadataReference[] GetMetadataReferences()
+        {
+            Type[] types = new Type[]
+            {
+                typeof(PrimaryKeyAttribute),
+            };
+            List<MetadataReference> metadataReferenceList = new List<MetadataReference>(types.Length);
+            foreach (Type t in types)
+            {
+                unsafe
+                {
+                    Assembly assembl = t.Assembly;
+                    assembl.TryGetRawMetadata(out byte* blob, out int length);
+                    ModuleMetadata moduleMetadata = ModuleMetadata.CreateFromMetadata((IntPtr)blob, length);
+                    AssemblyMetadata assemblyMetadata = AssemblyMetadata.Create(moduleMetadata);
+                    PortableExecutableReference metadataReference = assemblyMetadata.GetReference();
+                    metadataReferenceList.Add(metadataReference);
+                }
+            }
+            metadataReferenceList.AddRange(Basic.Reference.Assemblies.Net60.All);
+            return metadataReferenceList.ToArray();
+        }
+
         private static Assembly GetAssemblyOrNull(in RenderResult[] rrs, in string includeCsharpStr, in System.Runtime.Loader.AssemblyLoadContext context)
         {
             List<SyntaxTree> trees = new List<SyntaxTree>(rrs.Length + 1);
@@ -143,13 +168,7 @@ namespace NF.Tools.DataFlow
                 trees.Add(syntaxTree);
             }
             trees.Add(CSharpSyntaxTree.ParseText(includeCsharpStr));
-            MetadataReference[] referenceArray = new MetadataReference[]
-            {
-                MetadataReference.CreateFromFile(typeof(object).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(DescriptionAttribute).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(PrimaryKeyAttribute).Assembly.Location),
-                MetadataReference.CreateFromFile(Path.Combine(Path.GetDirectoryName(typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly.Location), "System.Runtime.dll")),
-            };
+            MetadataReference[] referenceArray = GetMetadataReferences();
             SyntaxTree[] treeArr = trees.ToArray();
             CSharpCompilation compilation = CSharpCompilation.Create(
                 "assemblyName",
