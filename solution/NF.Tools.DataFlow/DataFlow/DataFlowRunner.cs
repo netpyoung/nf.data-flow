@@ -9,13 +9,11 @@ using SqlCipher4Unity3D;
 using SQLite.Attributes;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
-using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -56,12 +54,15 @@ namespace NF.Tools.DataFlow
             bool shouldGenerateDb = !string.IsNullOrEmpty(opt.out_database);
             if (!shouldGenerateCode && !shouldGenerateDb)
             {
+                Console.Error.WriteLine($"shouldGenerateCode: {shouldGenerateCode} / shouldGenerateDb: {shouldGenerateDb}");
                 return 1;
             }
 
             WorkbookInfo[] workbookInfos = GetWorkbookInfosOrNull(opt);
             if (workbookInfos == null)
             {
+                Console.Error.WriteLine("workbookInfos is null");
+
                 return 1;
             }
 
@@ -70,6 +71,7 @@ namespace NF.Tools.DataFlow
             RenderResult[] rrs = GetRenderResultsOrNull(workbookInfos, templatePaths, opt.out_csharp);
             if (rrs == null)
             {
+                Console.Error.WriteLine("GetRenderResultsOrNull is null");
                 return 1;
             }
 
@@ -83,6 +85,7 @@ namespace NF.Tools.DataFlow
                 {
                     if (!File.Exists(templatePaths.IncludeCsharp))
                     {
+                        Console.Error.WriteLine("templatePaths.IncludeCsharp is not exists");
                         return 1;
                     }
                     includeCsharpStr = File.ReadAllText(templatePaths.IncludeCsharp);
@@ -99,6 +102,7 @@ namespace NF.Tools.DataFlow
                 assembly = GetAssemblyOrNull(rrs, includeCsharpStr, context);
                 if (assembly == null)
                 {
+                    Console.Error.WriteLine("assembly == null");
                     return 1;
                 }
             }
@@ -113,6 +117,7 @@ namespace NF.Tools.DataFlow
                 E_GENERATE_DB_RESULT dbResult = GenerateDb(assembly, workbookInfos, opt.password, opt.out_database, opt.datetime_as_ticks);
                 if (dbResult != E_GENERATE_DB_RESULT.OK)
                 {
+                    Console.Error.WriteLine($"dbResult: {dbResult}");
                     return 1;
                 }
             }
@@ -155,7 +160,7 @@ namespace NF.Tools.DataFlow
                     metadataReferenceList.Add(metadataReference);
                 }
             }
-            metadataReferenceList.AddRange(Basic.Reference.Assemblies.Net60.All);
+            metadataReferenceList.AddRange(Basic.Reference.Assemblies.Net80.ReferenceInfos.All.Select(x => x.Reference));
             return metadataReferenceList.ToArray();
         }
 
@@ -165,6 +170,7 @@ namespace NF.Tools.DataFlow
             foreach (ref readonly DataFlowRunner.RenderResult r in rrs.AsSpan())
             {
                 SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(r.RenderedText);
+                // Console.WriteLine($"r.RenderedText: {r.RenderedText}");
                 trees.Add(syntaxTree);
             }
             trees.Add(CSharpSyntaxTree.ParseText(includeCsharpStr));
@@ -182,6 +188,10 @@ namespace NF.Tools.DataFlow
                 EmitResult emitResult = compilation.Emit(peStream, pdbStream);
                 if (!emitResult.Success)
                 {
+                    foreach (Diagnostic diagnostic in emitResult.Diagnostics)
+                    {
+                        Console.WriteLine($"diagnostic : {diagnostic}");
+                    }
                     return null;
                 }
                 peStream.Seek(0, SeekOrigin.Begin);
@@ -230,6 +240,7 @@ namespace NF.Tools.DataFlow
             }
             catch (Exception ex)
             {
+                Console.Error.WriteLine($"ex: {ex}");
                 Debug.Assert(false);
                 return E_GENERATE_DB_RESULT.FAIL_DB_OPEARTE;
             }

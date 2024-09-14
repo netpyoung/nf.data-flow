@@ -38,6 +38,7 @@ namespace NF.Tools.DataFlow
             },
             err =>
             {
+                Console.Error.WriteLine($"err: {err}");
                 return 1;
             });
             return shellExitStatus;
