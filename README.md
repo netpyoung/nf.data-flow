@@ -73,14 +73,8 @@ ERROR(S):
 ## etc
 
 ``` cmd
-$ rake --version
-rake, version 13.0.6
-
 $ dotnet --version
 8.0.401
-
-$ rake tool_install
-$ rake dataflow
 ```
 
 ## Ref
@@ -93,3 +87,4 @@ $ rake dataflow
   - [SqlCipher4Unity3D](https://github.com/netpyoung/SqlCipher4Unity3D)
   - <https://github.com/sqlitebrowser/sqlitebrowser>
 - [Rakefile](https://github.com/ruby/rake)
+- <https://github.com/jaredpar/basic-reference-assemblies>

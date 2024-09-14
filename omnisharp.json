@@ -1,0 +1,31 @@
+{
+  "ref": [
+    "https://github.com/OmniSharp/omnisharp-roslyn/wiki/Configuration-Options"
+  ],
+  "script": {
+    "enableScriptNuGetReferences": true,
+    "defaultTargetFramework": "net8.0"
+  },
+  "FormattingOptions": {
+    "organizeImports": true,
+    "enableEditorConfigSupport": true
+  },
+  "RoslynExtensionsOptions": {
+      "enableImportCompletion": true,
+      "enableAnalyzersSupport": true,
+      "enableDecompilationSupport": true
+  },
+  "RenameOptions": {
+    "RenameInComments": true,
+    "RenameOverloads": true,
+    "RenameInStrings": true
+  },
+  "fileOptions": {
+    "systemExcludeSearchPatterns": [
+      "**/bin/**/*",
+      "**/obj/**/*",
+      "**/node_modules/**/*"
+    ],
+    "excludeSearchPatterns": []
+  }
+}
