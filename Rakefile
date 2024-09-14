@@ -35,5 +35,5 @@ end
 desc("generate db & dll")
 task :dataflow do
   # C:\prj\nf.data-flow\dataflow_unity\Assets\output
-  sh "dotnet nf-dataflow --input_paths #{INPUT_EXCEL_DIR} --output_code_dir #{OUTPUT_CODE_DIR} --output_db_path #{OUTPUT_DB_PATH} -p #{PASSWORD}"
+  sh "dotnet nf-dataflow --in_paths #{INPUT_EXCEL_DIR} --out_csharp #{OUTPUT_CODE_DIR} --out_database #{OUTPUT_DB_PATH} --password #{PASSWORD}"
 end
